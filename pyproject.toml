@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src/"]
+include = ["dqrobotics_extensions.pyplot"]
+
+[project]
+name = "dqrobotics-extensions-pyplot"
+dynamic = [
+    "version"
+]
+dependencies = [
+    "matplotlib",
+    "dqrobotics"
+]
+authors = [
+  {name = "Murilo M. Marinho", email = "murilomarinho@ieee.org"}
+]
+maintainers = [
+  {name = "Murilo M. Marinho", email = "murilomarinho@ieee.org"}
+]
+description = "An extension of dqrobotics to use matplotlib.pyplot to plot DQ elements."
+readme = "README.md"
+
+# https://setuptools-scm.readthedocs.io/en/latest/
+[tool.setuptools_scm]
+
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python :: 3"
+]
+
+[project.urls]
+Homepage = "https://github.com/MarinhoLab/dqrobotics-pyplot"
