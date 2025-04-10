@@ -7,7 +7,7 @@ where = ["src/"]
 include = ["dqrobotics_extensions.pyplot"]
 
 [project]
-name = "dqrobotics-extensions-pyplot"
+name = "dqrobotics-pyplot"
 dynamic = [
     "version"
 ]
