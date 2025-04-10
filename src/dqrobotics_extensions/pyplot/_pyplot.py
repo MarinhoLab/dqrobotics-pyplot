@@ -296,6 +296,8 @@ def _draw_pose(x: DQ, length: float = 0.1, ax=None):
     :param ax: Figure Axes or plt.gca() if None.
     :return: nothing.
     """
+    if not is_unit(x):
+        raise RuntimeError(f"The input x = {x} is not a unit dual quaternion.")
     if ax is None:
         ax = plt.gca()
 
