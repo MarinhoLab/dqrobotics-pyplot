@@ -19,8 +19,74 @@ Auhor: Murilo M. Marinho
 """
 from dqrobotics import *
 from dqrobotics.robot_modeling import DQ_SerialManipulator
+
 from matplotlib import pyplot as plt
+
 import numpy as np
+
+from math import acos, sin, cos
+
+def plot(obj, **kwargs):
+    """
+    An aggregator for all plot functions related to dqrobotics.
+
+    Plotting a unit dq "x":
+        plot(x)
+    Plotting a line dq "l_dq":
+        plot(l_dq, line=True)
+    Plotting a DQ_SerialManipulator "robot" at joint configurations q:
+        plot(robot, q=q)
+
+    :param obj:
+    :param kwargs:
+    :return:
+    """
+    if isinstance(obj,DQ):
+        if kwargs is None:
+            _plotdq(dq=obj)
+        else:
+            _plotdq(obj, **kwargs)
+    elif isinstance(obj,DQ_SerialManipulator):
+        _draw_serial_manipulator(obj, **kwargs)
+    else:
+        raise RuntimeError(f"plot not implemented yet for {obj}")
+
+def _plotdq(dq : DQ,
+            scale: float = 0.1,
+            name = None,
+            line = None,
+            plane = None,
+            color = 'r',
+            ax = None
+            ):
+    """
+    Implementing the pyplot valid options of
+    https://github.com/dqrobotics/matlab/blob/master/%40DQ/plot.m
+    the particular plotting functions did not inherit from these implementations and are an informed attempt of using
+    DQ operators to plot the objects.
+
+    :param dq: the input DQ.
+    :param scale: if not None, defines the size of the frame.
+    :param name: if not None, defines the name of the frame.
+    :param line: if not None, draw the input DQ as a line. Use a suitable 'linespec', that is, for instance 'r-' and.
+    :param plane: if not None, draw the input DQ as a plane.
+    :param color: Define color of the frame, line, or plane.
+    :return: Nothing.
+    """
+    if line is not None:
+        draw_line(l_dq=dq,
+                  linespec=color,
+                  length=scale,
+                  ax=ax)
+    elif plane is not None:
+        _draw_plane(pi_dq=dq,
+                    length_x=scale,
+                    length_y=scale,
+                    ax=ax)
+    else:
+        _draw_pose(x=dq,
+                   length=scale,
+                   ax=ax)
 
 
 def _dq_ajoint_grid(x: DQ, x_grid, y_grid, z_grid):
@@ -70,7 +136,7 @@ def _draw_cylinder(x,
     # https://stackoverflow.com/questions/26989131/add-cylinder-to-plot
     # I modified the code above to use dual quaternion algebra.
     if ax is None:
-        ax = plt.axes(projection='3d')
+        ax = plt.gca()
 
     # Cylindrical points start at zero
     z = np.linspace(-height_z / 2.0, height_z / 2.0, 20)  # Draw half the cylinder
@@ -85,6 +151,46 @@ def _draw_cylinder(x,
                     y_grid_ad,
                     z_grid_ad,
                     **param_dict)
+
+def _draw_plane(pi_dq,
+                length_x: float,
+                length_y: float,
+                ax=None):
+
+    if not is_plane(pi_dq):
+        raise RuntimeError(f"The input pi_dq = {pi_dq} is not a line.")
+    # https://stackoverflow.com/questions/26989131/add-cylinder-to-plot
+    # I modified the code above to use dual quaternion algebra.
+    if ax is None:
+        ax = plt.gca()
+
+    # For the purposes of plotting, we need to align the z-axis of the plot to the normal of the plane.
+    n = P(pi_dq)
+    d = D(pi_dq)
+    if n != k_:
+        phi: float = acos(dot(n, k_).q[0])
+        v: DQ = cross(n, k_) * (1.0 / sin(phi))
+        r: DQ = cos(phi / 2.0) + v * sin(phi / 2.0)
+    else:
+        r: DQ = DQ([1])
+
+    # The translation about z is after the normal is applied.
+    x_dq: DQ = r * (1 + 0.5*E_*d*k_)
+    _draw_pose(x_dq)
+
+    # Cylindrical points start at zero
+    x = np.linspace(-length_x / 2.0, length_x / 2.0, 2)
+    y = np.linspace(-length_y / 2.0, length_y / 2.0, 2)
+
+    x_grid, y_grid = np.meshgrid(x, y)
+    z_grid = np.zeros(x_grid.shape)
+
+    x_grid_ad, y_grid_ad, z_grid_ad = _dq_ajoint_grid(x_dq, x_grid, y_grid, z_grid)
+
+    ax.plot_surface(x_grid_ad,
+                    y_grid_ad,
+                    z_grid_ad,
+                    alpha=0.8)
 
 
 def _draw_revolute_joint(x,
@@ -122,11 +228,11 @@ def _dq_adjoint(x: DQ, t: DQ):
     return translation(x * t_dq * conj(x.sharp())) * 0.5
 
 
-def draw_serial_manipulator(robot: DQ_SerialManipulator,
-                            q: np.ndarray,
-                            linespec: str = "k-",
-                            linewidth=3,
-                            ax=None):
+def _draw_serial_manipulator(robot: DQ_SerialManipulator,
+                             q: np.ndarray,
+                             linespec: str = "k-",
+                             linewidth=3,
+                             ax=None):
     """
     Draw a serial manipulator at a given joint configuration q. Each joint transformation will be connected by a line
     with spec linespec and width linewidth.
@@ -152,15 +258,17 @@ def draw_serial_manipulator(robot: DQ_SerialManipulator,
         z_plot.append(t.q[3])
 
         _draw_revolute_joint(pose, ax=ax)
-        draw_pose(pose, ax=ax)
+        _draw_pose(pose, ax=ax)
 
     # Draw reference frame
-    t_ref = translation(robot.get_reference_frame())
+    x_ref = robot.get_reference_frame()
+    t_ref = translation(x_ref)
     ax.plot3D((t_ref.q[1], x_plot[0]),
               (t_ref.q[2], y_plot[0]),
               (t_ref.q[3], z_plot[0]),
               linespec,
               linewidth=linewidth)
+    _draw_pose(x_ref, ax=ax)
 
     for i in range(0, len(x_plot) - 1):
         ax.plot3D((x_plot[i], x_plot[i + 1]),
@@ -170,15 +278,17 @@ def draw_serial_manipulator(robot: DQ_SerialManipulator,
                   linewidth=linewidth)
 
     # Draw end effector frame
-    t_eff = translation(robot.fkm(q))
+    x_eff = robot.fkm(q)
+    t_eff = translation(x_eff)
     ax.plot3D((t_eff.q[1], x_plot[-1]),
               (t_eff.q[2], y_plot[-1]),
               (t_eff.q[3], z_plot[-1]),
               linespec,
               linewidth=linewidth)
+    _draw_pose(x_eff, ax=ax)
 
 
-def draw_pose(x: DQ, length: float = 0.1, ax=None):
+def _draw_pose(x: DQ, length: float = 0.1, ax=None):
     """
     Draw a reference frame at a given pose x.
     :param x: the pose as a unit DQ.
@@ -201,21 +311,21 @@ def draw_pose(x: DQ, length: float = 0.1, ax=None):
               t.q[3],
               "kx")
 
-    # x-axis
+    # x-axis arrow
     ax.quiver(t.q[1], t.q[2], t.q[3],
               i_prime.q[1], i_prime.q[2], i_prime.q[3],
               length=length,
               color="r",
               normalize=True)
 
-    # y-axis
+    # y-axis arrow
     ax.quiver(t.q[1], t.q[2], t.q[3],
               j_prime.q[1], j_prime.q[2], j_prime.q[3],
               length=length,
               color="g",
               normalize=True)
 
-    # z-axis
+    # z-axis arrow
     ax.quiver(t.q[1], t.q[2], t.q[3],
               k_prime.q[1], k_prime.q[2], k_prime.q[3],
               length=length,
@@ -234,6 +344,8 @@ def draw_line(l_dq: DQ, linespec: str = "r", length: float = 10.0, ax=None):
     :param ax: Figure Axes or plt.gca() if None.
     :return: nothing.
     """
+    if not is_line(l_dq):
+        raise RuntimeError(f"The input l_dq = {l_dq} is not a line.")
     if ax is None:
         ax = plt.gca()
 
