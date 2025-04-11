@@ -28,18 +28,28 @@ from math import acos, sin, cos
 
 def plot(obj, **kwargs):
     """
-    An aggregator for all plot functions related to dqrobotics.
+    An aggregator for all plot functions related to dqrobotics. Currently, supports
+    - DQ
+    - DQ_SerialManipulator
+
+    Before this can be used, please remember to initialise the plt Axes. Example
+        plt.figure()
+        ax = plt.axes(projection='3d')
+        plot(i_)
+        plt.show()
 
     Plotting a unit dq "x":
         plot(x)
     Plotting a line dq "l_dq":
         plot(l_dq, line=True)
+    Plotting a plane dq "pi_dq":
+        plot(pi_dq, plane=True)
     Plotting a DQ_SerialManipulator "robot" at joint configurations q:
         plot(robot, q=q)
 
-    :param obj:
-    :param kwargs:
-    :return:
+    :param obj: the input to be plotted.
+    :param kwargs: arguments depending on type of plot you need, see the description above.
+    :return: Nothing.
     """
     if isinstance(obj,DQ):
         if kwargs is None:
