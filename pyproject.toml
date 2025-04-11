@@ -23,10 +23,6 @@ maintainers = [
 ]
 description = "An extension of dqrobotics to use matplotlib.pyplot to plot DQ elements."
 readme = "README.md"
-
-# https://setuptools-scm.readthedocs.io/en/latest/
-[tool.setuptools_scm]
-
 classifiers = [
   "Development Status :: 4 - Beta",
   "Programming Language :: Python :: 3"
@@ -34,3 +30,6 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://github.com/MarinhoLab/dqrobotics-pyplot"
+
+# https://setuptools-scm.readthedocs.io/en/latest/
+[tool.setuptools_scm]
