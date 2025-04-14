@@ -32,7 +32,7 @@ A suitable figure must be created using `matplotlib.pyplot`, given that this lib
    :lines: 33-42
    :emphasize-lines: 3
 
-Draw a pose
+Plot a pose
 -----------
 
 .. note::
@@ -45,7 +45,7 @@ The most basic version of the call is.
    :lines: 44-48
    :emphasize-lines: 5
 
-Draw a line
+Plot a line
 -----------
 
 .. note::
@@ -58,7 +58,7 @@ The most basic version of the call is.
    :lines: 50-54
    :emphasize-lines: 5
 
-Draw a plane
+Plot a plane
 ------------
 
 .. note::
@@ -71,7 +71,7 @@ The most basic version of the call is.
    :lines: 56-60
    :emphasize-lines: 5
 
-Draw a `DQ_SerialManipulator`
+Plot a `DQ_SerialManipulator`
 -----------------------------
 
 .. note::
@@ -83,3 +83,41 @@ The most basic version of the call is.
    :language: python
    :lines: 62-65
    :emphasize-lines: 4
+
+Animating a `DQ_SerialManipulator`
+++++++++++++++++++++++++++++++++++
+
+.. note::
+
+   This is fully reliant on https://matplotlib.org/stable/api/animation_api.html.
+
+The important aspect of making animations is to properly use `matplotlib.animation` which is straightforward but does
+not allow for "execution-time" plots. The idea is to store the desired motion aspects and then animate that afterwards.
+
+We start importing the relevant libraries. We use `matplotlib.animation` and, to support more intricate animation
+functions we use `functools.partial`.
+
+.. literalinclude:: ../src/dqrobotics_extensions/pyplot/example_animation.py
+   :language: python
+   :lines: 26-31
+   :emphasize-lines: 5-6
+
+One example animation function for the robot is
+
+.. literalinclude:: ../src/dqrobotics_extensions/pyplot/example_animation.py
+   :language: python
+   :lines: 33-52
+   :emphasize-lines: 20
+
+where only the last line is related to `dqrobotics-pyplot`. Further reinforcing the need of a proper understanding of
+how `matplotlib.animation` works.
+
+Then, we have a `main` function that moves the robot as desired.
+
+.. literalinclude:: ../src/dqrobotics_extensions/pyplot/example_animation.py
+   :language: python
+   :lines: 54-95
+   :emphasize-lines: 12-14,21-23,31-
+
+Where we have some additional commands to store the control behavior, but, in general, only a few extra lines at the
+end are needed to generate the animation.

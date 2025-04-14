@@ -47,15 +47,11 @@ def animate_robot(n, robot, stored_q, stored_time):
     plt.ylim([-0.5, 0.5])
     plt.gca().set_zlabel('z [m]')
     plt.gca().set_zlim([0, 0.5])
-    plt.title(f'Translation control time={stored_time[n]:.2f} s out of {stored_time[-1]:.2f} s')
+    plt.title(f'Joint control time={stored_time[n]:.2f} s out of {stored_time[-1]:.2f} s')
 
     dqp.plot(robot, q=stored_q[n])
 
 def main():
-
-    # Set up plot
-    fig = plt.figure()
-    plt.axes(projection='3d')
 
     # Define the robot
     robot = KukaLw4Robot.kinematics()
@@ -84,6 +80,10 @@ def main():
 
         # Move the robot
         q = q + u * tau
+
+    # Set up plot
+    fig = plt.figure()
+    plt.axes(projection='3d')
 
     anim = anm.FuncAnimation(fig,
                       partial(animate_robot,

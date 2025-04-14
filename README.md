@@ -23,7 +23,9 @@ from matplotlib import pyplot as plt
 import dqrobotics_extensions.pyplot as dqp
 ```
 
-## Usage example
+## Usage examples
+
+### Basic functionalities
 
 See the script in
 
@@ -35,4 +37,18 @@ or alternatively the installed version
 
 ```Console
 dqrobotics_pyplot_example
+```
+
+### Animations
+
+See
+
+```Console
+src/dqrobotics_extensions/pyplot/example_animations.py
+```
+
+or alternatively the installed version
+
+```Console
+dqrobotics_pyplot_example_animation
 ```
