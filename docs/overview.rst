@@ -8,8 +8,8 @@ In this library, the user must call the function `plot()`. It will dispatch the 
     Never use internal methods, e.g., with a trailing `_` directly. The API for those can change at any time.
 
 
-Importing the `dqrobotics-pyplot`
----------------------------------
+Importing `dqrobotics-pyplot`
+-----------------------------
 
 .. warning::
     This import directive is to be used while `dqrobotics-pyplot` is not an integral part of the `dqrobotics` library.
