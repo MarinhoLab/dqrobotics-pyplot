@@ -35,7 +35,8 @@ jobs:
       # https://mystmd.org/guide/deployment-github-pages#fn-except-custom-domains
       - name: Install dependencies and build page
         run: |
-          python -m pip install sphinx sphinx-autodoc2 furo myst_parser
+          pip install .
+          python -m pip install sphinx sphinx-autodoc2 furo myst_parser 
           cd docs
           make html
 
