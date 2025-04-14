@@ -37,5 +37,14 @@ myst_enable_extensions = ["fieldlist", "deflist"]
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
-
+# https://github.com/sphinx-extensions2/sphinx-autodoc2/blob/main/docs/conf.py
 html_theme = "furo"
+html_theme_options = {
+    "top_of_page_button": "edit",
+    "source_repository": "https://github.com/marinholab/dqrobotics-pyplot",
+    "source_branch": "main",
+    "source_directory": "docs/",
+    "announcement": "<em>Just released 🎉, feedback welcomed at "
+    "<a href='https://github.com/MarinhoLab/dqrobotics-pyplot/issues'>dqrobotics-pyplot Issues</a></em>",
+}
+
