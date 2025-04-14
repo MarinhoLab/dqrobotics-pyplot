@@ -1,5 +1,9 @@
 # Quickstart: `pyplot` extensions to `dqrobotics`
 
+
+https://github.com/user-attachments/assets/e1017920-3f23-4211-8a90-34019ba6a079
+
+
 ## Issues
 
 [https://github.com/MarinhoLab/dqrobotics-pyplot/issues](https://github.com/MarinhoLab/dqrobotics-pyplot/issues)
