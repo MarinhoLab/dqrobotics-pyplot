@@ -4,14 +4,6 @@ requires = [
     "setuptools-git-versioning>=2.0,<3"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-# this package will read some included files in runtime, avoid installing it as .zip
-zip-safe = false # https://setuptools-git-versioning.readthedocs.io/en/stable/runtime_version.html
-
-[tool.setuptools.package-data]
-# include VERSION file to a package
-dqrobotics-pyplot = ["VERSION"] # https://setuptools-git-versioning.readthedocs.io/en/stable/runtime_version.html
-
 [tool.setuptools.packages.find]
 where = ["src/"]
 include = ["dqrobotics_extensions.pyplot"]
@@ -50,4 +42,3 @@ enabled = true
 # https://stackoverflow.com/questions/73605607/how-to-use-setuptools-scm
 dev_template = "{tag}.{ccount}"
 dirty_template = "{tag}.{ccount}"
-version_file = "src/dqrobotics_extensions/pyplot/VERSION" # https://setuptools-git-versioning.readthedocs.io/en/stable/runtime_version.html
