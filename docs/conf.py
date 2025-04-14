@@ -11,7 +11,7 @@ from dqrobotics_extensions.pyplot import __version__
 project = 'dqrobotics-pyplot'
 copyright = f'2025-{date.today().year}, Murilo M. Marinho'
 author = 'Murilo M. Marinho'
-version = __version__
+release = __version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
