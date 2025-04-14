@@ -33,6 +33,9 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/MarinhoLab/dqrobotics-pyplot"
 
+[project.scripts]
+dqrobotics_pyplot_example = "dqrobotics_extensions.pyplot.example:main"
+
 # https://pypi.org/project/setuptools-git-versioning/
 [tool.setuptools-git-versioning]
 enabled = true

@@ -21,13 +21,16 @@ from dqrobotics import *
 from dqrobotics.robots import KukaLw4Robot
 from dqrobotics.utils.DQ_Math import deg2rad
 
-from dqrobotics_extensions.pyplot import plot
+# Adding the prefix `dqp` to help users differentiate from `plt`
+import dqrobotics_extensions.pyplot as dqp
 
 from matplotlib import pyplot as plt
 
 from math import sin, cos, pi
 
-if __name__ == "__main__":
+def main():
+
+    # Set up plot
     plt.figure()
     plot_size = 1
     ax = plt.axes(projection='3d')
@@ -39,26 +42,29 @@ if __name__ == "__main__":
     ax.set_zlim((-plot_size, plot_size))
 
     # Draw a pose
-    x_phi = pi/3
-    r = cos(x_phi) + i_*sin(x_phi)
+    x_phi = pi / 3
+    r = cos(x_phi) + i_ * sin(x_phi)
     x = r + 0.5 * E_ * (0.5 * j_ + 0.45 * k_) * r
-    plot(x)
+    dqp.plot(x)
 
     # Draw a line
     l = k_
     m = cross(-0.3 * j_, l)
-    l_dq = l + E_*m
-    plot(l_dq, line=True, scale=1)
+    l_dq = l + E_ * m
+    dqp.plot(l_dq, line=True, scale=1)
 
     # Draw a plane
     n_pi = i_
     d_pi = 0.1
-    pi_dq = n_pi + E_*d_pi
-    plot(pi_dq, plane=True, scale=1)
+    pi_dq = n_pi + E_ * d_pi
+    dqp.plot(pi_dq, plane=True, scale=1)
 
     # Draw a manipulator
     q = deg2rad([0, 45, 0, -90, 0, -45, 0])
     robot = KukaLw4Robot.kinematics()
-    plot(robot, q=q)
+    dqp.plot(robot, q=q)
 
     plt.show()
+
+if __name__ == "__main__":
+    main()
