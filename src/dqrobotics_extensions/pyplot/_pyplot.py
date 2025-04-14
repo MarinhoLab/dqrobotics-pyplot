@@ -49,7 +49,7 @@ def plot(obj, **kwargs):
 
     :param obj: the input to be plotted.
     :param kwargs: arguments depending on type of plot you need, see the description above.
-    :return: Nothing.
+    :raises RuntimeError: If input instance `obj` has no meaning for function or if the `obj` is not valid for the input options.
     """
     if isinstance(obj,DQ):
         if kwargs is None:
@@ -81,13 +81,13 @@ def _plotdq(dq : DQ,
     :param line: if not None, draw the input DQ as a line. Use a suitable 'linespec', that is, for instance 'r-' and.
     :param plane: if not None, draw the input DQ as a plane.
     :param color: Define color of the frame, line, or plane.
-    :return: Nothing.
+    :param ax: Figure Axes or plt.gca() if None.
     """
     if line is not None:
-        draw_line(l_dq=dq,
-                  linespec=color,
-                  length=scale,
-                  ax=ax)
+        _draw_line(l_dq=dq,
+                   linespec=color,
+                   length=scale,
+                   ax=ax)
     elif plane is not None:
         _draw_plane(pi_dq=dq,
                     length_x=scale,
@@ -98,77 +98,22 @@ def _plotdq(dq : DQ,
                    length=scale,
                    ax=ax)
 
-
-def _dq_ajoint_grid(x: DQ, x_grid, y_grid, z_grid):
-    if x_grid.shape != y_grid.shape or x_grid.shape != z_grid.shape:
-        raise RuntimeError("Shapes of arguments must be the same.")
-
-    shape = x_grid.shape
-    rows, cols = shape
-
-    x_grid_ad = np.zeros(shape)
-    y_grid_ad = np.zeros(shape)
-    z_grid_ad = np.zeros(shape)
-
-    for i in range(0, rows):
-        for j in range(0, cols):
-            x_element = x_grid[i, j]
-            y_element = y_grid[i, j]
-            z_element = z_grid[i, j]
-
-            p = DQ([x_element, y_element, z_element])
-            p_prime = _dq_adjoint(x, p)
-
-            x_grid_ad[i, j] = p_prime.q[1]
-            y_grid_ad[i, j] = p_prime.q[2]
-            z_grid_ad[i, j] = p_prime.q[3]
-
-    return x_grid_ad, y_grid_ad, z_grid_ad
-
-
-def _draw_cylinder(x,
-                   height_z: float,
-                   radius: float,
-                   param_dict: dict,
-                   ax=None):
-    """
-    Internal method to draw a cylinder. x is a unit dual quaternion that defines the centre of the cilinder. The cylinder
-    will span from -height_z/2 to +height_z/2. Use param_dict to define anything to be passed on to plot_surface.
-    :param x: a unit dual quaternion representing the pose of the centre of the cylinder.
-    :param height_z: the height of the cylinder.
-    :param radius: the radius of the cylinder.
-    :param param_dict: the parameter dictionary to be passed on to plot_surface.
-    :param ax: Figure Axes or plt.gca() if None.
-    :return: nothing
-    """
-    if not is_unit(x):
-        raise RuntimeError("The argument x must be a unit dual quaternion.")
-    # https://stackoverflow.com/questions/26989131/add-cylinder-to-plot
-    # I modified the code above to use dual quaternion algebra.
-    if ax is None:
-        ax = plt.gca()
-
-    # Cylindrical points start at zero
-    z = np.linspace(-height_z / 2.0, height_z / 2.0, 20)  # Draw half the cylinder
-    theta = np.linspace(0, 2 * np.pi, 20)
-    theta_grid, z_grid = np.meshgrid(theta, z)
-    x_grid = radius * np.cos(theta_grid)
-    y_grid = radius * np.sin(theta_grid)
-
-    x_grid_ad, y_grid_ad, z_grid_ad = _dq_ajoint_grid(x, x_grid, y_grid, z_grid)
-
-    ax.plot_surface(x_grid_ad,
-                    y_grid_ad,
-                    z_grid_ad,
-                    **param_dict)
-
 def _draw_plane(pi_dq,
                 length_x: float,
                 length_y: float,
                 ax=None):
+    """
+    Draw a plane representing the DQ pi_dq. In this plot, the normal will be represented by the local z-axis of the plane
+    and the plane will span in its local x-y axis.
+    :param pi_dq: the DQ representation of the plane.
+    :param length_x: the desired x-axis length.
+    :param length_y: the desired y-axis length.
+    :param ax: Figure Axes or plt.gca() if None.
+    :raises RuntimeError: If argument `x` is not a plane.
+    """
 
     if not is_plane(pi_dq):
-        raise RuntimeError(f"The input pi_dq = {pi_dq} is not a line.")
+        raise RuntimeError(f"The input pi_dq = {pi_dq} is not a plane.")
     # https://stackoverflow.com/questions/26989131/add-cylinder-to-plot
     # I modified the code above to use dual quaternion algebra.
     if ax is None:
@@ -195,48 +140,12 @@ def _draw_plane(pi_dq,
     x_grid, y_grid = np.meshgrid(x, y)
     z_grid = np.zeros(x_grid.shape)
 
-    x_grid_ad, y_grid_ad, z_grid_ad = _dq_ajoint_grid(x_dq, x_grid, y_grid, z_grid)
+    x_grid_ad, y_grid_ad, z_grid_ad = __dq_ajoint_grid(x_dq, x_grid, y_grid, z_grid)
 
     ax.plot_surface(x_grid_ad,
                     y_grid_ad,
                     z_grid_ad,
                     alpha=0.8)
-
-
-def _draw_revolute_joint(x,
-                         height_z=0.07,
-                         radius=0.02,
-                         ax=None):
-    param_dict = {
-        "alpha": 0.8,
-        "linewidth": 0,
-        "color": 'r'
-    }
-    _draw_cylinder(x,
-                   height_z=height_z,
-                   radius=radius,
-                   param_dict=param_dict,
-                   ax=ax)
-
-
-def _dq_adjoint(x: DQ, t: DQ):
-    """
-    This currently does not seem to exist in the implementation of dqrobotics.
-    I'm basing this on (25) of https://faculty.sites.iastate.edu/jia/files/inline-files/dual-quaternion.pdf
-    until I find another authoritative source.
-
-    :param x: A unit dual quaternion.
-    :param t: A pure quaternion representing the point to be transformed.
-    :return: A pure quaternion of representing the transformed point.
-    """
-    if not is_unit(x):
-        raise RuntimeError("The argument x must be a unit dual quaternion.")
-    if not (is_pure(t) and is_quaternion(t)):
-        raise RuntimeError("The argument t must be a pure quaternion.")
-
-    t_dq = 1 + E_ * t
-    return translation(x * t_dq * conj(x.sharp())) * 0.5
-
 
 def _draw_serial_manipulator(robot: DQ_SerialManipulator,
                              q: np.ndarray,
@@ -251,7 +160,6 @@ def _draw_serial_manipulator(robot: DQ_SerialManipulator,
     :param linespec: a matplotlib linespec. Has a default value.
     :param linewidth: the width compatible with matplotlib. Has a default value.
     :param ax: Figure Axes or plt.gca() if None.
-    :return: Nothing.
     """
     if ax is None:
         ax = plt.gca()
@@ -267,7 +175,7 @@ def _draw_serial_manipulator(robot: DQ_SerialManipulator,
         y_plot.append(t.q[2])
         z_plot.append(t.q[3])
 
-        _draw_revolute_joint(pose, ax=ax)
+        __draw_revolute_joint(pose, ax=ax)
         _draw_pose(pose, ax=ax)
 
     # Draw reference frame
@@ -304,7 +212,7 @@ def _draw_pose(x: DQ, length: float = 0.1, ax=None):
     :param x: the pose as a unit DQ.
     :param length: the length of each axis' line. Has a default value.
     :param ax: Figure Axes or plt.gca() if None.
-    :return: nothing.
+    :raises RuntimeError: If argument `x` is not a unit dual quaternion.
     """
     if not is_unit(x):
         raise RuntimeError(f"The input x = {x} is not a unit dual quaternion.")
@@ -344,17 +252,14 @@ def _draw_pose(x: DQ, length: float = 0.1, ax=None):
               color="b",
               normalize=True)
 
-
-
-def draw_line(l_dq: DQ, linespec: str = "r", length: float = 10.0, ax=None):
+def _draw_line(l_dq: DQ, linespec: str = "r", length: float = 10.0, ax=None):
     """
-    Draw a line representing the DQ l_dq. This expects a figure to be currently active.
-
+    Draw a line representing the DQ l_dq.
     :param l_dq: the DQ representation of the line.
     :param linespec: the desired linespec. Has a default value.
     :param length: the length. Has a default value.
     :param ax: Figure Axes or plt.gca() if None.
-    :return: nothing.
+    :raises RuntimeError: If argument `x` is not a line.
     """
     if not is_line(l_dq):
         raise RuntimeError(f"The input l_dq = {l_dq} is not a line.")
@@ -374,3 +279,122 @@ def draw_line(l_dq: DQ, linespec: str = "r", length: float = 10.0, ax=None):
     ax.plot3D((pl_negative.q[1], pl_positive.q[1]),
               (pl_negative.q[2], pl_positive.q[2]),
               (pl_negative.q[3], pl_positive.q[3]), linespec)
+
+def __draw_revolute_joint(x,
+                          height_z=0.07,
+                          radius=0.02,
+                          ax=None):
+    """
+    This internal function is used to draw cylinders, for now, for DQ_SerialManipulators. The cylinder's height is through
+    its z-axis, and it spans from -height_z/2 to +height_z/2.
+    :param x: the pose as a DQ.
+    :param height_z: the height of the cylinder.
+    :param radius: the radius of the cylinder
+    :param ax: Figure Axes or plt.gca() if None.
+    """
+
+    param_dict = {
+        "alpha": 0.8,
+        "linewidth": 0,
+        "color": 'r'
+    }
+    __draw_cylinder(x,
+                    height_z=height_z,
+                    radius=radius,
+                    param_dict=param_dict,
+                    ax=ax)
+
+
+def __dq_adjoint(x: DQ, t: DQ):
+    """
+    This internal function currently does not seem to exist in the implementation of dqrobotics. It will be replaced
+    when it's available.
+    I'm basing this on (25) of https://faculty.sites.iastate.edu/jia/files/inline-files/dual-quaternion.pdf
+    until I find another authoritative source.
+
+    :param x: A unit dual quaternion.
+    :param t: A pure quaternion representing the point to be transformed.
+    :return: A pure quaternion of representing the transformed point.
+    :raises RuntimeError: If argument `x` is not a unit dual quaternion or if `t` is not a pure quaternion.
+    """
+    if not is_unit(x):
+        raise RuntimeError("The argument x must be a unit dual quaternion.")
+    if not (is_pure(t) and is_quaternion(t)):
+        raise RuntimeError("The argument t must be a pure quaternion.")
+
+    t_dq = 1 + E_ * t
+    return translation(x * t_dq * conj(x.sharp())) * 0.5
+
+
+def __dq_ajoint_grid(x: DQ, x_grid, y_grid, z_grid):
+    """
+    This internal function runs `__dq_adjoint` through all elements of a grid so that calculations are simplified.
+    For instance, to move a cylinder or other surface around a plot.
+    :param x: A unit dual quaternion.
+    :param x_grid: A suitable x-axis grid element (see __draw_cylinder)
+    :param y_grid: A suitable y-axis grid element (see __draw_cylinder)
+    :param z_grid: A suitable z-axis grid element (see __draw_cylinder)
+    :return: The transformed grids by `x`.
+    :raises RuntimeError: If argument grids have different shapes.
+    """
+    if x_grid.shape != y_grid.shape or x_grid.shape != z_grid.shape:
+        raise RuntimeError("Shapes of arguments must be the same.")
+
+    shape = x_grid.shape
+    rows, cols = shape
+
+    x_grid_ad = np.zeros(shape)
+    y_grid_ad = np.zeros(shape)
+    z_grid_ad = np.zeros(shape)
+
+    for i in range(0, rows):
+        for j in range(0, cols):
+            x_element = x_grid[i, j]
+            y_element = y_grid[i, j]
+            z_element = z_grid[i, j]
+
+            p = DQ([x_element, y_element, z_element])
+            p_prime = __dq_adjoint(x, p)
+
+            x_grid_ad[i, j] = p_prime.q[1]
+            y_grid_ad[i, j] = p_prime.q[2]
+            z_grid_ad[i, j] = p_prime.q[3]
+
+    return x_grid_ad, y_grid_ad, z_grid_ad
+
+
+def __draw_cylinder(x,
+                    height_z: float,
+                    radius: float,
+                    param_dict: dict,
+                    ax=None):
+    """
+    Internal method to draw a cylinder. x is a unit dual quaternion that defines the centre of the cilinder. The cylinder
+    will span from -height_z/2 to +height_z/2. Use param_dict to define anything to be passed on to plot_surface.
+    :param x: a unit dual quaternion representing the pose of the centre of the cylinder.
+    :param height_z: the height of the cylinder.
+    :param radius: the radius of the cylinder.
+    :param param_dict: the parameter dictionary to be passed on to plot_surface.
+    :param ax: Figure Axes or plt.gca() if None.
+    :raises RuntimeError: If argument `x` is not a unit dual quaternion.
+    """
+    if not is_unit(x):
+        raise RuntimeError("The argument x must be a unit dual quaternion.")
+    # https://stackoverflow.com/questions/26989131/add-cylinder-to-plot
+    # I modified the code above to use dual quaternion algebra.
+    if ax is None:
+        ax = plt.gca()
+
+    # Cylindrical points start at zero
+    z = np.linspace(-height_z / 2.0, height_z / 2.0, 20)  # Draw half the cylinder
+    theta = np.linspace(0, 2 * np.pi, 20)
+    theta_grid, z_grid = np.meshgrid(theta, z)
+    x_grid = radius * np.cos(theta_grid)
+    y_grid = radius * np.sin(theta_grid)
+
+    x_grid_ad, y_grid_ad, z_grid_ad = __dq_ajoint_grid(x, x_grid, y_grid, z_grid)
+
+    ax.plot_surface(x_grid_ad,
+                    y_grid_ad,
+                    z_grid_ad,
+                    **param_dict)
