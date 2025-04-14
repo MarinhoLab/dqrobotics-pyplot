@@ -35,6 +35,7 @@ Homepage = "https://github.com/MarinhoLab/dqrobotics-pyplot"
 
 [project.scripts]
 dqrobotics_pyplot_example = "dqrobotics_extensions.pyplot.example:main"
+dqrobotics_pyplot_example_animation = "dqrobotics_extensions.pyplot.example_animation:main"
 
 # https://pypi.org/project/setuptools-git-versioning/
 [tool.setuptools-git-versioning]

@@ -21,7 +21,7 @@ import numpy as np
 
 from dqrobotics import *
 from dqrobotics.robots import KukaLw4Robot
-from dqrobotics.robot_control import DQ_PseudoinverseController, ControlObjective
+from dqrobotics.utils.DQ_Math import deg2rad
 
 # Adding the prefix `dqp` to help users differentiate from `plt`
 import dqrobotics_extensions.pyplot as dqp
@@ -31,29 +31,25 @@ import matplotlib.animation as anm # Matplotlib animation
 from functools import partial # Need to call functions correctly for matplotlib animations
 
 # Animation function
-def animate_robot(n, robot, stored_q, xd, stored_time):
+def animate_robot(n, robot, stored_q, stored_time):
     """
     Create an animation function compatible with `plt`.
     Adapted from https://marinholab.github.io/OpenExecutableBooksRobotics//lesson-dq8-optimization-based-robot-control.
-    :param n:
-    :param robot:
-    :param stored_q:
-    :param xd:
-    :param stored_time:
-    :return:
+    :param n: The frame number, necessary for pyplot.
+    :param robot: The DQ_SerialManipulator instance to plot.
+    :param stored_q: The sequence of joint configurations.
+    :param stored_time: The sequence of timepoints to plot in the title.
     """
-    dof = robot.get_dim_configuration_space()
-
     plt.cla()
-    dqp.plot(robot, q=stored_q[n])
-    dqp.plot(xd)
     plt.xlabel('x [m]')
-    plt.xlim([-2, 2])
+    plt.xlim([-1.0, 0.0])
     plt.ylabel('y [m]')
-    plt.ylim([-2, 2])
+    plt.ylim([-0.5, 0.5])
     plt.gca().set_zlabel('z [m]')
-    plt.gca().set_zlim([0, 2])
+    plt.gca().set_zlim([0, 0.5])
     plt.title(f'Translation control time={stored_time[n]:.2f} s out of {stored_time[-1]:.2f} s')
+
+    dqp.plot(robot, q=stored_q[n])
 
 def main():
 
@@ -61,23 +57,15 @@ def main():
     fig = plt.figure()
     plt.axes(projection='3d')
 
-    # Move the robot and store the data
     # Define the robot
     robot = KukaLw4Robot.kinematics()
-    # Define the controller
-    translation_controller = DQ_PseudoinverseController(robot)
-    translation_controller.set_control_objective(ControlObjective.Translation)
-    translation_controller.set_gain(100)
-    translation_controller.set_damping(0.1)
 
-    # Desired translation (pure quaternion)
-    td = 1 * j_
     # Sampling time [s]
     tau = 0.01
     # Simulation time [s]
     time_final = 1
     # Initial joint values [rad]
-    q = np.zeros(7)
+    q = deg2rad([0, 45, 0, -45, 0, 45, 0])
     # Store the control signals
     stored_q = []
     stored_time = []
@@ -91,10 +79,8 @@ def main():
         stored_q.append(q)
         stored_time.append(time)
 
-        # Get the next control signal [rad/s]
-        u = translation_controller.compute_setpoint_control_signal(q, vec4(td))
-
-        print(f"u={u} for {td} and fkm={translation(robot.fkm(q))}")
+        # A joint-space velocity
+        u = np.ones(7)
 
         # Move the robot
         q = q + u * tau
@@ -103,7 +89,6 @@ def main():
                       partial(animate_robot,
                               robot=robot,
                               stored_q=stored_q,
-                              xd=1 + 0.5 * E_ * td,
                               stored_time=stored_time),
                       frames=len(stored_q))
 
