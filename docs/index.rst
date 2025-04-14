@@ -1,15 +1,9 @@
-.. dqrobotics-pyplot documentation master file, created by
-   sphinx-quickstart on Mon Apr 14 13:13:06 2025.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 dqrobotics-pyplot documentation
 ===============================
+..
+   https://stackoverflow.com/questions/46278683/include-my-markdown-readme-into-sphinx
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
-
+.. mdinclude:: ../../README.md
 
 .. toctree::
    :maxdepth: 2
