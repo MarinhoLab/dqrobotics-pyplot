@@ -1,5 +1,7 @@
 [build-system]
-requires = ["setuptools >= 77.0.3", "setuptools-scm>=8"]
+requires = [
+    "setuptools >= 77.0.3",
+    "setuptools-git-versioning>=2.0,<3"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
@@ -31,5 +33,9 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/MarinhoLab/dqrobotics-pyplot"
 
-# https://setuptools-scm.readthedocs.io/en/latest/
-[tool.setuptools_scm]
+# https://pypi.org/project/setuptools-git-versioning/
+[tool.setuptools-git-versioning]
+enabled = true
+# https://stackoverflow.com/questions/73605607/how-to-use-setuptools-scm
+dev_template = "{tag}.{ccount}"
+dirty_template = "{tag}.{ccount}"
