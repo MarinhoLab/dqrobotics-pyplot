@@ -24,31 +24,39 @@ See the script in
 ```console
 src/dqrobotics_extensions/pyplot/example.py
 ```
-https://github.com/MarinhoLab/dqrobotics-pyplot/blob/7f8a4b02ef1f2e03bdcafa551b3ea8beadfdcf61/src/dqrobotics_extensions/pyplot/example.py#L31-67
+https://github.com/MarinhoLab/dqrobotics-pyplot/blob/7f8a4b02ef1f2e03bdcafa551b3ea8beadfdcf61/src/dqrobotics_extensions/pyplot/example.py#L31-L67
 
 ### Importing the library
 
-https://github.com/MarinhoLab/dqrobotics-pyplot/blob/7f8a4b02ef1f2e03bdcafa551b3ea8beadfdcf61/src/dqrobotics_extensions/pyplot/example.py#L24-25
+https://github.com/MarinhoLab/dqrobotics-pyplot/blob/7f8a4b02ef1f2e03bdcafa551b3ea8beadfdcf61/src/dqrobotics_extensions/pyplot/example.py#L24-L25
 
 ### Seting up the plot
 
 `dqrobotics-pyplot` uses `matplotlib.pyplot`, so always remember to create a proper figure and axes with `projection='3d''`. Other settings
 are a matter of taste and desired quality.
 
-https://github.com/MarinhoLab/dqrobotics-pyplot/blob/7f8a4b02ef1f2e03bdcafa551b3ea8beadfdcf61/src/dqrobotics_extensions/pyplot/example.py#L33-36
+https://github.com/MarinhoLab/dqrobotics-pyplot/blob/7f8a4b02ef1f2e03bdcafa551b3ea8beadfdcf61/src/dqrobotics_extensions/pyplot/example.py#L33-L36
 
 ### Drawing a pose
 
-https://github.com/MarinhoLab/dqrobotics-pyplot/blob/7f8a4b02ef1f2e03bdcafa551b3ea8beadfdcf61/src/dqrobotics_extensions/pyplot/example.py#L44-48
+Calling `dqp.plot()` without additional settings with a `DQ` argument will result in a reference-frame-type plot.
+
+https://github.com/MarinhoLab/dqrobotics-pyplot/blob/7f8a4b02ef1f2e03bdcafa551b3ea8beadfdcf61/src/dqrobotics_extensions/pyplot/example.py#L44-L48
 
 ### Drawing a line
 
-https://github.com/MarinhoLab/dqrobotics-pyplot/blob/7f8a4b02ef1f2e03bdcafa551b3ea8beadfdcf61/src/dqrobotics_extensions/pyplot/example.py#L50-54
+Call `dqp.plot()` with `line=True` to plot a line.
+
+https://github.com/MarinhoLab/dqrobotics-pyplot/blob/7f8a4b02ef1f2e03bdcafa551b3ea8beadfdcf61/src/dqrobotics_extensions/pyplot/example.py#L50-L54
 
 ### Drawing a plane
 
-https://github.com/MarinhoLab/dqrobotics-pyplot/blob/7f8a4b02ef1f2e03bdcafa551b3ea8beadfdcf61/src/dqrobotics_extensions/pyplot/example.py#L56-60
+Call `dqp.plot()` with `plane=True` to plot a plane.
+
+https://github.com/MarinhoLab/dqrobotics-pyplot/blob/7f8a4b02ef1f2e03bdcafa551b3ea8beadfdcf61/src/dqrobotics_extensions/pyplot/example.py#L56-L60
 
 ### Drawing a manipulator
 
-https://github.com/MarinhoLab/dqrobotics-pyplot/blob/7f8a4b02ef1f2e03bdcafa551b3ea8beadfdcf61/src/dqrobotics_extensions/pyplot/example.py#L62-65
+Call `dqp.plot()` with a `DQ_SerialManipulator` as argument and always remember to set the `q` argument, which should be a suitable `np.array`.
+
+https://github.com/MarinhoLab/dqrobotics-pyplot/blob/7f8a4b02ef1f2e03bdcafa551b3ea8beadfdcf61/src/dqrobotics_extensions/pyplot/example.py#L62-L65
