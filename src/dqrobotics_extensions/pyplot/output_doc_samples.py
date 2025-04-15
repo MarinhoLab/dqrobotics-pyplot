@@ -171,7 +171,6 @@ def output_planes():
         _set_plot_limits()
 
     fig.tight_layout()
-    plt.show()
     plt.savefig("output_planes.png")
 
 if __name__ == "__main__":

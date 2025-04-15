@@ -6,7 +6,7 @@
     part of `dqrobotics`.
 
 
-Welcome to `dqrobotics-pyplot`. Most users will be interested in the :doc:`Quickstart <quickstart>`.
+Welcome to `dqrobotics-pyplot`. Most users will be interested in the :doc:`Quickstart <README>`.
 The :doc:`Overview <overview>` explains the basic usage of the library and more advanced examples are available in the
 :doc:`Gallery <gallery>`.
 
@@ -14,7 +14,7 @@ The :doc:`Overview <overview>` explains the basic usage of the library and more 
    :maxdepth: 2
    :caption: Content
 
-   ../quickstart
+   README
    overview
    gallery
    apidocs/index

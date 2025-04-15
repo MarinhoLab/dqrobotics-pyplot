@@ -1,15 +1,17 @@
-Quickstart: `pyplot` extensions to `dqrobotics`
-===============================================
+Quickstart
+==========
+
+These are the non-official `pyplot` extensions to `dqrobotics`.
 
 Gallery
 -------
 
-`<https://marinholab.github.io/dqrobotics-pyplot/gallery.html>`
+`https://marinholab.github.io/dqrobotics-pyplot/gallery.html`
 
 Issues
 ------
 
-`<https://github.com/MarinhoLab/dqrobotics-pyplot/issues>`
+`https://github.com/MarinhoLab/dqrobotics-pyplot/issues`
 
 Documentation
 -------------
