@@ -13,6 +13,7 @@
    :caption: Content
 
    overview
+   gallery
    apidocs/index
    misc
 

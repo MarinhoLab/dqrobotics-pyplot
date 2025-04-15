@@ -38,6 +38,11 @@ jobs:
       - name: Install dependencies and build page
         run: |
           pip install .
+          
+          cd docs
+          dqrobotics_pyplot_output_doc_samples
+          cd ..
+          
           python -m pip install sphinx sphinx-autodoc2 furo myst_parser 
           cd docs
           make html
