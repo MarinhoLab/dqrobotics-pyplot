@@ -100,6 +100,7 @@ def _plot_dq(dq : DQ,
         _plot_plane(pi_dq=dq,
                     length_x=scale,
                     length_y=scale,
+                    color=color,
                     ax=ax)
     else:
         _plot_pose(x=dq,
@@ -109,6 +110,7 @@ def _plot_dq(dq : DQ,
 def _plot_plane(pi_dq,
                 length_x: float,
                 length_y: float,
+                color: 'b',
                 ax=None):
     """
     Draw a plane representing the DQ pi_dq. In this plot, the normal will be represented by the local z-axis of the plane
@@ -153,7 +155,8 @@ def _plot_plane(pi_dq,
     ax.plot_surface(x_grid_ad,
                     y_grid_ad,
                     z_grid_ad,
-                    alpha=0.8)
+                    alpha=0.8,
+                    color=color)
 
 def _plot_serial_manipulator(robot: DQ_SerialManipulator,
                              q: np.ndarray,
