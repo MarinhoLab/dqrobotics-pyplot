@@ -5,18 +5,17 @@
     `dqrobotics-pyplot` is not an official extension and might be heavily changed before it is accepted as an integral
     part of `dqrobotics`.
 
-..
-   https://myst-parser.readthedocs.io/en/latest/faq/index.html
+
+Welcome to `dqrobotics-pyplot`. Most users will be interested in the :doc:`Quickstart <quickstart>`.
+The :doc:`Overview <overview>` explains the basic usage of the library and more advanced examples are available in the
+:doc:`Gallery <gallery>`.
 
 .. toctree::
    :maxdepth: 2
    :caption: Content
 
+   ../quickstart
    overview
    gallery
    apidocs/index
    misc
-
-.. include:: ../README.md
-   :parser: myst_parser.sphinx_
-

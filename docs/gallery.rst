@@ -7,7 +7,7 @@ Poses
 -----
 
 .. note::
-    See :meth:`pyplot._output_doc_samples.output_poses`.
+    See :meth:`pyplot.output_doc_samples.output_poses`.
 
 .. image:: output_poses.png
   :width: 800
@@ -17,7 +17,7 @@ Lines
 -----
 
 .. note::
-    See :meth:`pyplot._output_doc_samples.output_lines`.
+    See :meth:`pyplot.output_doc_samples.output_lines`.
 
 .. image:: output_lines.png
   :width: 800
@@ -27,7 +27,7 @@ Planes
 ------
 
 .. note::
-    See :meth:`pyplot._output_doc_samples.output_planes`.
+    See :meth:`pyplot.output_doc_samples.output_planes`.
 
 .. image:: output_planes.png
   :width: 800
