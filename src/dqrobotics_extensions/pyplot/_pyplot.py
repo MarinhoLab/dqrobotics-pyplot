@@ -64,22 +64,22 @@ def plot(obj, **kwargs):
     """
     if isinstance(obj,DQ):
         if kwargs is None:
-            _plotdq(dq=obj)
+            _plot_dq(dq=obj)
         else:
-            _plotdq(obj, **kwargs)
+            _plot_dq(obj, **kwargs)
     elif isinstance(obj,DQ_SerialManipulator):
         _plot_serial_manipulator(obj, **kwargs)
     else:
         raise RuntimeError(f"plot not implemented yet for {obj}")
 
-def _plotdq(dq : DQ,
-            scale: float = 0.1,
-            name = None,
-            line = None,
-            plane = None,
-            color = 'r',
-            ax = None
-            ):
+def _plot_dq(dq : DQ,
+             scale: float = 0.1,
+             name = None,
+             line = None,
+             plane = None,
+             color = 'r',
+             ax = None
+             ):
     """
     Implementing the pyplot valid options of
     https://github.com/dqrobotics/matlab/blob/master/%40DQ/plot.m
@@ -89,7 +89,7 @@ def _plotdq(dq : DQ,
     :param dq: the input DQ.
     :param scale: if not None, defines the size of the frame.
     :param name: if not None, defines the name of the frame.
-    :param line: if not None, draw the input DQ as a line. Use a suitable 'linespec', that is, for instance 'r-' and.
+    :param line: if not None, draw the input DQ as a line.
     :param plane: if not None, draw the input DQ as a plane.
     :param color: Define color of the frame, line, or plane.
     :param ax: Figure Axes or plt.gca() if None.
@@ -380,7 +380,7 @@ def __plot_cylinder(x,
                     param_dict: dict,
                     ax=None):
     """
-    Internal method to draw a cylinder. x is a unit dual quaternion that defines the centre of the cilinder. The cylinder
+    Internal method to draw a cylinder. x is a unit dual quaternion that defines the centre of the cylinder. The cylinder
     will span from -height_z/2 to +height_z/2. Use param_dict to define anything to be passed on to plot_surface.
     :param x: a unit dual quaternion representing the pose of the centre of the cylinder.
     :param height_z: the height of the cylinder.

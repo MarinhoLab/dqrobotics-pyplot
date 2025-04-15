@@ -10,7 +10,7 @@ In a macos enviroment, this needs
 
     brew install ffmpeg
 
-then, before doing `plt.show()`, add the code below to save an animation called `anim.
+then, before doing `plt.show()`, add the code below to save an animation called `anim`.
 
 .. code-block:: python
 
