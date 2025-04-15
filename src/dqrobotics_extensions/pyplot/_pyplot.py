@@ -30,7 +30,7 @@ def plot(obj, **kwargs):
     """
     An aggregator for all plot functions related to dqrobotics. Currently, supports `DQ` and `DQ_SerialManipulator`.
 
-    Import it as follows
+    Import it as follows:
 
         import dqrobotics_extensions.pyplot as dqp
 
@@ -40,7 +40,6 @@ def plot(obj, **kwargs):
         ax = plt.axes(projection='3d')
         dqp.plot(i_)
         plt.show()
-
 
     Plotting a unit DQ `x` (See internal function `pyplot._pyplot._plot_pose`):
 
@@ -74,7 +73,6 @@ def plot(obj, **kwargs):
 
 def _plot_dq(dq : DQ,
              scale: float = 0.1,
-             name = None,
              line = None,
              plane = None,
              color = 'r',
@@ -88,7 +86,6 @@ def _plot_dq(dq : DQ,
 
     :param dq: the input DQ.
     :param scale: if not None, defines the size of the frame.
-    :param name: if not None, defines the name of the frame.
     :param line: if not None, draw the input DQ as a line.
     :param plane: if not None, draw the input DQ as a plane.
     :param color: Define color of the frame, line, or plane.

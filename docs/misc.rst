@@ -4,7 +4,7 @@ MISC
 Saving an animation video
 -------------------------
 
-In a macos enviroment, this needs
+In a macos environment, this needs
 
 .. code-block:: console
 
