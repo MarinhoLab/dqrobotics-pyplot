@@ -42,19 +42,19 @@ def plot(obj, **kwargs):
         plt.show()
 
 
-    Plotting a unit DQ `x` (See internal function `pyplot._pyplot._draw_pose`):
+    Plotting a unit DQ `x` (See internal function `pyplot._pyplot._plot_pose`):
 
         dqp.plot(x)
 
-    Plotting a line DQ `l_dq` (See internal function `pyplot._pyplot._draw_line`):
+    Plotting a line DQ `l_dq` (See internal function `pyplot._pyplot._plot_line`):
 
         dqp.plot(l_dq, line=True)
 
-    Plotting a plane DQ `pi_dq` (See internal function `pyplot._pyplot._draw_plane`):
+    Plotting a plane DQ `pi_dq` (See internal function `pyplot._pyplot._plot_plane`):
 
         dqp.plot(pi_dq, plane=True)
 
-    Plotting a `DQ_SerialManipulator` called `robot` at joint configurations `q` (See internal function `pyplot._pyplot._draw_serial_manipulator`):
+    Plotting a `DQ_SerialManipulator` called `robot` at joint configurations `q` (See internal function `pyplot._pyplot._plot_serial_manipulator`):
 
         dqp.plot(robot, q=q)
 
@@ -68,7 +68,7 @@ def plot(obj, **kwargs):
         else:
             _plotdq(obj, **kwargs)
     elif isinstance(obj,DQ_SerialManipulator):
-        _draw_serial_manipulator(obj, **kwargs)
+        _plot_serial_manipulator(obj, **kwargs)
     else:
         raise RuntimeError(f"plot not implemented yet for {obj}")
 
@@ -95,21 +95,21 @@ def _plotdq(dq : DQ,
     :param ax: Figure Axes or plt.gca() if None.
     """
     if line is not None:
-        _draw_line(l_dq=dq,
+        _plot_line(l_dq=dq,
                    linespec=color,
                    length=scale,
                    ax=ax)
     elif plane is not None:
-        _draw_plane(pi_dq=dq,
+        _plot_plane(pi_dq=dq,
                     length_x=scale,
                     length_y=scale,
                     ax=ax)
     else:
-        _draw_pose(x=dq,
+        _plot_pose(x=dq,
                    length=scale,
                    ax=ax)
 
-def _draw_plane(pi_dq,
+def _plot_plane(pi_dq,
                 length_x: float,
                 length_y: float,
                 ax=None):
@@ -142,7 +142,7 @@ def _draw_plane(pi_dq,
 
     # The translation about z is after the normal is applied.
     x_dq: DQ = r * (1 + 0.5*E_*d*k_)
-    _draw_pose(x_dq)
+    _plot_pose(x_dq)
 
     # Cylindrical points start at zero
     x = np.linspace(-length_x / 2.0, length_x / 2.0, 2)
@@ -158,7 +158,7 @@ def _draw_plane(pi_dq,
                     z_grid_ad,
                     alpha=0.8)
 
-def _draw_serial_manipulator(robot: DQ_SerialManipulator,
+def _plot_serial_manipulator(robot: DQ_SerialManipulator,
                              q: np.ndarray,
                              linespec: str = "k-",
                              linewidth=3,
@@ -186,8 +186,8 @@ def _draw_serial_manipulator(robot: DQ_SerialManipulator,
         y_plot.append(t.q[2])
         z_plot.append(t.q[3])
 
-        __draw_revolute_joint(pose, ax=ax)
-        _draw_pose(pose, ax=ax)
+        __plot_revolute_joint(pose, ax=ax)
+        _plot_pose(pose, ax=ax)
 
     # Draw reference frame
     x_ref = robot.get_reference_frame()
@@ -197,7 +197,7 @@ def _draw_serial_manipulator(robot: DQ_SerialManipulator,
               (t_ref.q[3], z_plot[0]),
               linespec,
               linewidth=linewidth)
-    _draw_pose(x_ref, ax=ax)
+    _plot_pose(x_ref, ax=ax)
 
     for i in range(0, len(x_plot) - 1):
         ax.plot3D((x_plot[i], x_plot[i + 1]),
@@ -214,10 +214,10 @@ def _draw_serial_manipulator(robot: DQ_SerialManipulator,
               (t_eff.q[3], z_plot[-1]),
               linespec,
               linewidth=linewidth)
-    _draw_pose(x_eff, ax=ax)
+    _plot_pose(x_eff, ax=ax)
 
 
-def _draw_pose(x: DQ, length: float = 0.1, ax=None):
+def _plot_pose(x: DQ, length: float = 0.1, ax=None):
     """
     Draw a reference frame at a given pose x.
     :param x: the pose as a unit DQ.
@@ -263,7 +263,7 @@ def _draw_pose(x: DQ, length: float = 0.1, ax=None):
               color="b",
               normalize=True)
 
-def _draw_line(l_dq: DQ, linespec: str = "r", length: float = 10.0, ax=None):
+def _plot_line(l_dq: DQ, linespec: str = "r", length: float = 10.0, ax=None):
     """
     Draw a line representing the DQ l_dq.
     :param l_dq: the DQ representation of the line.
@@ -291,7 +291,7 @@ def _draw_line(l_dq: DQ, linespec: str = "r", length: float = 10.0, ax=None):
               (pl_negative.q[2], pl_positive.q[2]),
               (pl_negative.q[3], pl_positive.q[3]), linespec)
 
-def __draw_revolute_joint(x,
+def __plot_revolute_joint(x,
                           height_z=0.07,
                           radius=0.02,
                           ax=None):
@@ -309,7 +309,7 @@ def __draw_revolute_joint(x,
         "linewidth": 0,
         "color": 'r'
     }
-    __draw_cylinder(x,
+    __plot_cylinder(x,
                     height_z=height_z,
                     radius=radius,
                     param_dict=param_dict,
@@ -342,9 +342,9 @@ def __dq_ajoint_grid(x: DQ, x_grid, y_grid, z_grid):
     This internal function runs `__dq_adjoint` through all elements of a grid so that calculations are simplified.
     For instance, to move a cylinder or other surface around a plot.
     :param x: A unit dual quaternion.
-    :param x_grid: A suitable x-axis grid element (see __draw_cylinder)
-    :param y_grid: A suitable y-axis grid element (see __draw_cylinder)
-    :param z_grid: A suitable z-axis grid element (see __draw_cylinder)
+    :param x_grid: A suitable x-axis grid element (see __plot_cylinder)
+    :param y_grid: A suitable y-axis grid element (see __plot_cylinder)
+    :param z_grid: A suitable z-axis grid element (see __plot_cylinder)
     :return: The transformed grids by `x`.
     :raises RuntimeError: If argument grids have different shapes.
     """
@@ -374,7 +374,7 @@ def __dq_ajoint_grid(x: DQ, x_grid, y_grid, z_grid):
     return x_grid_ad, y_grid_ad, z_grid_ad
 
 
-def __draw_cylinder(x,
+def __plot_cylinder(x,
                     height_z: float,
                     radius: float,
                     param_dict: dict,

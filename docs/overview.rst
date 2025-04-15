@@ -36,7 +36,7 @@ Plot a pose
 -----------
 
 .. note::
-    See its API :meth:`pyplot._pyplot._draw_pose`.
+    See its API :meth:`pyplot._pyplot._plot_pose`.
 
 The most basic version of the call is.
 
@@ -49,7 +49,7 @@ Plot a line
 -----------
 
 .. note::
-    See its API :meth:`pyplot._pyplot._draw_line`.
+    See its API :meth:`pyplot._pyplot._plot_line`.
 
 The most basic version of the call is.
 
@@ -62,7 +62,7 @@ Plot a plane
 ------------
 
 .. note::
-    See its API :meth:`pyplot._pyplot._draw_plane`.
+    See its API :meth:`pyplot._pyplot._plot_plane`.
 
 The most basic version of the call is.
 
@@ -75,7 +75,7 @@ Plot a `DQ_SerialManipulator`
 -----------------------------
 
 .. note::
-    See its API :meth:`pyplot._pyplot._draw_serial_manipulator`.
+    See its API :meth:`pyplot._pyplot._plot_serial_manipulator`.
 
 The most basic version of the call is.
 
