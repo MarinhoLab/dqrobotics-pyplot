@@ -182,28 +182,32 @@ def output_moving_primitives():
     # Store the plotted variables
     stored_x = []
     stored_l_dq = []
+    stored_pi_dq = []
     stored_time = []
 
     x = DQ([1])
-    l_dq_init = i_
+    ls_dq_init = [i_, j_, k_]
+    pis_dq_init = [k_]
 
     # Translation controller loop.
     for time in np.arange(0, time_final + tau, tau):
 
         # Modify line
-        l_dq = Ad(x, l_dq_init)
+        ls_dq = [Ad(x, l_dq_init) for l_dq_init in ls_dq_init]
+        pis_dq = [Adsharp(conj(x), pi_dq_init) for pi_dq_init in pis_dq_init]
 
         # Store data for posterior animation
         stored_x.append(x)
-        stored_l_dq.append(l_dq)
+        stored_l_dq.append(ls_dq)
+        stored_pi_dq.append(pis_dq)
         stored_time.append(time)
 
         # Move x
-        r = cos(10*time/2) + j_ * sin(10*time/2)
+        r = cos((10 * time) / 2) + j_ * sin((10 * time) / 2)
         t = 0.1*(i_ + j_ + k_) * sin(time)
         x = r + 0.5 * E_ * t * r
 
-    def animate_plot(n, stored_x, stored_l_dq, stored_time):
+    def animate_plot(n, stored_x, stored_l_dq, stored_pi_dq, stored_time):
 
         plt.cla()
         plt.xlabel('x [m]')
@@ -215,16 +219,20 @@ def output_moving_primitives():
         plt.title(f'Animation time={stored_time[n]:.2f} s out of {stored_time[-1]:.2f} s')
 
         dqp.plot(stored_x[n])
-        dqp.plot(stored_l_dq[n], line=True, scale=2, color="g")
+        for l_dq in stored_l_dq[n]:
+            dqp.plot(l_dq, line=True, scale=2, color="g")
+        for pi_dq in stored_pi_dq[n]:
+            dqp.plot(pi_dq, plane=True, scale=2, color='b')
 
     # Set up the plot
-    fig = plt.figure(dpi=300, figsize=(12, 10))
+    fig = plt.figure(dpi=200, figsize=(12, 10))
     plt.axes(projection='3d')
 
     anim = anm.FuncAnimation(fig,
                       partial(animate_plot,
                               stored_x=stored_x,
                               stored_l_dq=stored_l_dq,
+                              stored_pi_dq=stored_pi_dq,
                               stored_time=stored_time),
                       frames=len(stored_x))
 

@@ -76,6 +76,7 @@ def _plot_dq(dq : DQ,
              line = None,
              plane = None,
              color = 'r',
+             alpha = 0.8,
              ax = None
              ):
     """
@@ -89,6 +90,7 @@ def _plot_dq(dq : DQ,
     :param line: If not None, draw the input DQ as a line.
     :param plane: If not None, draw the input DQ as a plane.
     :param color: Define the color of the frame, line, or plane.
+    :param alpha: Define the alpha of the plane.
     :param ax: Figure Axes or plt.gca() if None.
     """
     if line is not None:
@@ -101,6 +103,7 @@ def _plot_dq(dq : DQ,
                     length_x=scale,
                     length_y=scale,
                     color=color,
+                    alpha=alpha,
                     ax=ax)
     else:
         _plot_pose(x=dq,
@@ -110,7 +113,8 @@ def _plot_dq(dq : DQ,
 def _plot_plane(pi_dq,
                 length_x: float,
                 length_y: float,
-                color: 'b',
+                color,
+                alpha: float,
                 ax=None):
     """
     Draw a plane representing the DQ pi_dq. In this plot, the normal will be represented by the local z-axis of the plane
@@ -118,6 +122,8 @@ def _plot_plane(pi_dq,
     :param pi_dq: The DQ representation of the plane.
     :param length_x: The desired x-axis length.
     :param length_y: The desired y-axis length.
+    :param color: Define the color of the plane.
+    :param alpha: Define the alpha of the plane.
     :param ax: Figure Axes or plt.gca() if None.
     :raises RuntimeError: If argument `x` is not a plane.
     """
@@ -156,7 +162,7 @@ def _plot_plane(pi_dq,
     ax.plot_surface(x_grid_ad,
                     y_grid_ad,
                     z_grid_ad,
-                    alpha=0.8,
+                    alpha=alpha,
                     color=color)
 
 def _plot_serial_manipulator(robot: DQ_SerialManipulator,
