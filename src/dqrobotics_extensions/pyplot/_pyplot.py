@@ -133,6 +133,7 @@ def _plot_plane(pi_dq,
     n = P(pi_dq)
     d = D(pi_dq)
 
+    # Find a rotation that aligns the normal of the plane with the z-axis.
     if not np.allclose(n.q, k_.q, atol=DQ_threshold):
         phi: float = acos(dot(n, k_).q[0])
         v: DQ = cross(n, k_) * (1.0 / sin(phi))
@@ -142,7 +143,6 @@ def _plot_plane(pi_dq,
 
     # The translation about z is after the normal is applied.
     x_dq: DQ = r * (1 + 0.5*E_ * d * k_)
-    _plot_pose(x_dq)
 
     # Cylindrical points start at zero
     x = np.linspace(-length_x / 2.0, length_x / 2.0, 2)
@@ -301,7 +301,7 @@ def __plot_revolute_joint(x,
     its z-axis, and it spans from -height_z/2 to +height_z/2.
     :param x: the pose as a DQ.
     :param height_z: the height of the cylinder.
-    :param radius: the radius of the cylinder
+    :param radius: the radius of the cylinder.
     :param ax: Figure Axes or plt.gca() if None.
     """
 
@@ -334,7 +334,7 @@ def __dq_adjoint(x: DQ, t: DQ):
         raise RuntimeError("The argument t must be a pure quaternion.")
 
     t_dq = 1 + E_ * t
-    return D(x * t_dq * conj(x.sharp()))
+    return D(conj(Adsharp(x, t_dq)))
 
 
 def __dq_ajoint_grid(x: DQ, x_grid, y_grid, z_grid):
