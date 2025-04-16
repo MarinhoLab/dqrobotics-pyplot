@@ -46,6 +46,9 @@ def _set_plot_limits():
     plt.gca().set_zlim([-0.5, 0.5])
 
 def output_poses():
+    """
+    Calculate and visualize multiple poses represented as DQs.
+    """
 
     # x1
     t1 = 0
@@ -84,10 +87,7 @@ def output_poses():
 
 def output_lines():
     """
-    Underline unfortunately does not work well on mathtex and playing with latex distributions for this purpose is a bit
-    much right now.
-    Hopefully this gets added https://github.com/matplotlib/matplotlib/issues/14235
-    so that titles can get the underline.
+    Calculate and visualize multiple lines represented as DQs.
     """
 
     # l1
@@ -131,7 +131,7 @@ def output_lines():
 
 def output_planes():
     """
-    Same underline issue as mentioned in `output_lines`.
+    Calculate and visualize multiple planes represented as DQs.
     """
 
     # l1
