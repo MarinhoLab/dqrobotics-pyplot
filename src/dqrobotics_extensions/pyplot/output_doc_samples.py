@@ -25,14 +25,14 @@ from dqrobotics.utils.DQ_Math import deg2rad
 import dqrobotics_extensions.pyplot as dqp
 
 from matplotlib import pyplot as plt
+import matplotlib.animation as anm # Matplotlib animation
+from functools import partial # Need to call functions correctly for matplotlib animations
 
 from math import sin, cos, pi
+import numpy as np
 
-def main():
-
-    output_poses()
-    output_lines()
-    output_planes()
+"""Any changes in line spacing in this file must be reflected in the documentation. See: https://marinholab.github.io/dqrobotics-pyplot/gallery.html
+It is recommended that any new functions are added just before main()."""
 
 def _set_plot_labels():
     plt.xlabel('x [m]')
@@ -172,6 +172,72 @@ def output_planes():
 
     fig.tight_layout()
     plt.savefig("output_planes.png")
+
+def output_moving_primitives():
+
+    # Sampling time [s]
+    tau = 0.01
+    # Simulation time [s]
+    time_final = 1
+    # Store the plotted variables
+    stored_x = []
+    stored_l_dq = []
+    stored_time = []
+
+    x = DQ([1])
+    l_dq_init = i_
+
+    # Translation controller loop.
+    for time in np.arange(0, time_final + tau, tau):
+
+        # Modify line
+        l_dq = Ad(x, l_dq_init)
+
+        # Store data for posterior animation
+        stored_x.append(x)
+        stored_l_dq.append(l_dq)
+        stored_time.append(time)
+
+        # Move x
+        r = cos(10*time/2) + j_ * sin(10*time/2)
+        t = 0.1*(i_ + j_ + k_) * sin(time)
+        x = r + 0.5 * E_ * t * r
+
+    def animate_plot(n, stored_x, stored_l_dq, stored_time):
+
+        plt.cla()
+        plt.xlabel('x [m]')
+        plt.xlim([-1.0, 1.0])
+        plt.ylabel('y [m]')
+        plt.ylim([-1.0, 1.0])
+        plt.gca().set_zlabel('z [m]')
+        plt.gca().set_zlim([-1.0, 1.0])
+        plt.title(f'Animation time={stored_time[n]:.2f} s out of {stored_time[-1]:.2f} s')
+
+        dqp.plot(stored_x[n])
+        dqp.plot(stored_l_dq[n], line=True, scale=2, color="g")
+
+    # Set up the plot
+    fig = plt.figure(dpi=300, figsize=(12, 10))
+    plt.axes(projection='3d')
+
+    anim = anm.FuncAnimation(fig,
+                      partial(animate_plot,
+                              stored_x=stored_x,
+                              stored_l_dq=stored_l_dq,
+                              stored_time=stored_time),
+                      frames=len(stored_x))
+
+    anim.save("output_moving_primitives.mp4")
+
+
+
+def main():
+
+    output_poses()
+    output_lines()
+    output_planes()
+    output_moving_primitives()
 
 if __name__ == "__main__":
     main()

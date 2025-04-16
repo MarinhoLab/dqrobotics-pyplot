@@ -20,7 +20,8 @@ extensions = [
     "myst_parser",
     "autodoc2",
     #"sphinx.ext.intersphinx", # not used just yet
-    "sphinx.ext.viewcode"
+    "sphinx.ext.viewcode",
+    "sphinxcontrib.video"
 ]
 autodoc2_render_plugin = "myst"
 autodoc2_packages = [

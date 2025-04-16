@@ -57,9 +57,9 @@ def plot(obj, **kwargs):
 
         dqp.plot(robot, q=q)
 
-    :param obj: the input to be plotted.
-    :param kwargs: arguments depending on type of plot you need, see the description above.
-    :raises RuntimeError: If input instance `obj` has no meaning for function or if the `obj` is not valid for the input options.
+    :param obj: The input to be plotted.
+    :param kwargs: For arguments depending on the type of plot you need, see the description above.
+    :raises RuntimeError: If the input instance `obj` has no meaning for function, or if the `obj` is not valid for the input options.
     """
     if isinstance(obj,DQ):
         if kwargs is None:
@@ -84,11 +84,11 @@ def _plot_dq(dq : DQ,
     the particular plotting functions did not inherit from these implementations and are an informed attempt of using
     DQ operators to plot the objects.
 
-    :param dq: the input DQ.
-    :param scale: if not None, defines the size of the frame.
-    :param line: if not None, draw the input DQ as a line.
-    :param plane: if not None, draw the input DQ as a plane.
-    :param color: Define color of the frame, line, or plane.
+    :param dq: The input DQ.
+    :param scale: If not None, defines the size of the frame.
+    :param line: If not None, draw the input DQ as a line.
+    :param plane: If not None, draw the input DQ as a plane.
+    :param color: Define the color of the frame, line, or plane.
     :param ax: Figure Axes or plt.gca() if None.
     """
     if line is not None:
@@ -115,9 +115,9 @@ def _plot_plane(pi_dq,
     """
     Draw a plane representing the DQ pi_dq. In this plot, the normal will be represented by the local z-axis of the plane
     and the plane will span in its local x-y axis.
-    :param pi_dq: the DQ representation of the plane.
-    :param length_x: the desired x-axis length.
-    :param length_y: the desired y-axis length.
+    :param pi_dq: The DQ representation of the plane.
+    :param length_x: The desired x-axis length.
+    :param length_y: The desired y-axis length.
     :param ax: Figure Axes or plt.gca() if None.
     :raises RuntimeError: If argument `x` is not a plane.
     """
@@ -129,10 +129,11 @@ def _plot_plane(pi_dq,
     if ax is None:
         ax = plt.gca()
 
-    # For the purposes of plotting, we need to align the z-axis of the plot to the normal of the plane.
+    # For plotting, we need to align the z-axis of the plot to the normal of the plane.
     n = P(pi_dq)
     d = D(pi_dq)
-    if n != k_:
+
+    if not np.allclose(n.q, k_.q, atol=DQ_threshold):
         phi: float = acos(dot(n, k_).q[0])
         v: DQ = cross(n, k_) * (1.0 / sin(phi))
         r: DQ = cos(phi / 2.0) + v * sin(phi / 2.0)
@@ -140,7 +141,7 @@ def _plot_plane(pi_dq,
         r: DQ = DQ([1])
 
     # The translation about z is after the normal is applied.
-    x_dq: DQ = r * (1 + 0.5*E_*d*k_)
+    x_dq: DQ = r * (1 + 0.5*E_ * d * k_)
     _plot_pose(x_dq)
 
     # Cylindrical points start at zero
@@ -167,9 +168,9 @@ def _plot_serial_manipulator(robot: DQ_SerialManipulator,
     Draw a serial manipulator at a given joint configuration q. Each joint transformation will be connected by a line
     with spec linespec and width linewidth.
     :param robot: A concrete subclass of DQ_SerialManipulator.
-    :param q: the joint configurations.
-    :param linespec: a matplotlib linespec. Has a default value.
-    :param linewidth: the width compatible with matplotlib. Has a default value.
+    :param q: The joint configurations.
+    :param linespec: A matplotlib linespec. Has a default value.
+    :param linewidth: The width is compatible with matplotlib. Has a default value.
     :param ax: Figure Axes or plt.gca() if None.
     """
     if ax is None:
@@ -189,7 +190,7 @@ def _plot_serial_manipulator(robot: DQ_SerialManipulator,
         __plot_revolute_joint(pose, ax=ax)
         _plot_pose(pose, ax=ax)
 
-    # Draw reference frame
+    # Draw a reference frame
     x_ref = robot.get_reference_frame()
     t_ref = translation(x_ref)
     ax.plot3D((t_ref.q[1], x_plot[0]),
@@ -284,8 +285,8 @@ def _plot_line(l_dq: DQ, linespec: str = "r", length: float = 10.0, ax=None):
     # This is always a point in the line. More specifically, the projection of 0i_ + 0j_ + 0k_ onto the line.
     pl = cross(l, m)
 
-    pl_positive = pl + length * l
-    pl_negative = pl - length * l
+    pl_positive = pl + (length / 2.0) * l
+    pl_negative = pl - (length / 2.0) * l
 
     ax.plot3D((pl_negative.q[1], pl_positive.q[1]),
               (pl_negative.q[2], pl_positive.q[2]),
@@ -320,13 +321,12 @@ def __dq_adjoint(x: DQ, t: DQ):
     """
     This internal function currently does not seem to exist in the implementation of dqrobotics. It will be replaced
     when it's available.
-    I'm basing this on (25) of https://faculty.sites.iastate.edu/jia/files/inline-files/dual-quaternion.pdf
-    until I find another authoritative source.
+    I'm basing this on (25) of https://faculty.sites.iastate.edu/jia/files/inline-files/dual-quaternion.pdf.
 
     :param x: A unit dual quaternion.
     :param t: A pure quaternion representing the point to be transformed.
     :return: A pure quaternion of representing the transformed point.
-    :raises RuntimeError: If argument `x` is not a unit dual quaternion or if `t` is not a pure quaternion.
+    :raises RuntimeError: If argument `x` is not a unit dual quaternion, or if `t` is not a pure quaternion.
     """
     if not is_unit(x):
         raise RuntimeError("The argument x must be a unit dual quaternion.")
@@ -334,7 +334,7 @@ def __dq_adjoint(x: DQ, t: DQ):
         raise RuntimeError("The argument t must be a pure quaternion.")
 
     t_dq = 1 + E_ * t
-    return translation(x * t_dq * conj(x.sharp())) * 0.5
+    return D(x * t_dq * conj(x.sharp()))
 
 
 def __dq_ajoint_grid(x: DQ, x_grid, y_grid, z_grid):

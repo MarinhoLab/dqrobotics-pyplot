@@ -37,13 +37,14 @@ jobs:
       # https://mystmd.org/guide/deployment-github-pages#fn-except-custom-domains
       - name: Install dependencies and build page
         run: |
+          sudo apt install -y ffmpeg
           pip install .
           
           cd docs
           dqrobotics_pyplot_output_doc_samples
           cd ..
           
-          python -m pip install sphinx sphinx-autodoc2 furo myst_parser 
+          python -m pip install sphinx sphinx-autodoc2 furo myst_parser sphinxcontrib-video
           cd docs
           make html
 
