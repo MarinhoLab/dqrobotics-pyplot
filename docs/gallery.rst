@@ -3,6 +3,16 @@ Gallery
 
 Sample plots generated with the latest version of the library directly from the code when the documentation is built.
 
+Preamble
+--------
+
+Auxiliar methods :meth:`pyplot.output_doc_samples._set_plot_labels` and :meth:`pyplot.output_doc_samples._set_plot_limits`
+are used to make the gallery code uniform.
+
+.. literalinclude:: ../src/dqrobotics_extensions/pyplot/output_doc_samples.py
+   :language: python
+   :lines: 37-46
+
 Poses
 -----
 
