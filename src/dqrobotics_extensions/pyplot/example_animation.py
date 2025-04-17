@@ -15,7 +15,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-Auhor: Murilo M. Marinho
+Author: Murilo M. Marinho
 """
 import numpy as np
 
@@ -81,7 +81,7 @@ def main():
         # Move the robot
         q = q + u * tau
 
-    # Set up plot
+    # Set up the plot
     fig = plt.figure()
     plt.axes(projection='3d')
 

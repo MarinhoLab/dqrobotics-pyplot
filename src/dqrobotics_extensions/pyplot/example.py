@@ -15,7 +15,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-Auhor: Murilo M. Marinho
+Author: Murilo M. Marinho
 """
 from dqrobotics import *
 from dqrobotics.robots import KukaLw4Robot
@@ -30,7 +30,7 @@ from math import sin, cos, pi
 
 def main():
 
-    # Set up plot
+    # Set up the plot
     plt.figure()
     plot_size = 1
     ax = plt.axes(projection='3d')

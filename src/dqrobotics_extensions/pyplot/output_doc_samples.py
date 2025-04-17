@@ -15,7 +15,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-Auhor: Murilo M. Marinho
+Author: Murilo M. Marinho
 """
 from dqrobotics import *
 from dqrobotics.robots import KukaLw4Robot
@@ -32,14 +32,14 @@ from math import sin, cos, pi
 import numpy as np
 from pyparsing import alphas
 
-"""Any changes in line spacing in this file must be reflected in the documentation. See: https://marinholab.github.io/dqrobotics-pyplot/gallery.html
+"""Any changes in line spacing in this file must be reflected in the documentation. 
+See: https://marinholab.github.io/dqrobotics-pyplot/gallery.html
 It is recommended that any new functions are added just before main()."""
 
 def _set_plot_labels():
     plt.xlabel('x [m]')
     plt.ylabel('y [m]')
     plt.gca().set_zlabel('z [m]')
-
 
 def _set_plot_limits():
     plt.xlim([-0.5, 0.5])
@@ -175,6 +175,9 @@ def output_planes():
     plt.savefig("output_planes.png")
 
 def output_moving_primitives():
+    """
+    Calculate and visualize multiple moving primitives represented as DQs.
+    """
 
     # Sampling time [s]
     tau = 0.01
@@ -211,19 +214,21 @@ def output_moving_primitives():
     def animate_plot(n, stored_x, stored_l_dq, stored_pi_dq, stored_time):
 
         plt.cla()
-        plt.xlabel('x [m]')
-        plt.xlim([-1.0, 1.0])
-        plt.ylabel('y [m]')
-        plt.ylim([-1.0, 1.0])
-        plt.gca().set_zlabel('z [m]')
-        plt.gca().set_zlim([-1.0, 1.0])
+        _set_plot_limits()
+        _set_plot_labels()
         plt.title(f'Animation time={stored_time[n]:.2f} s out of {stored_time[-1]:.2f} s')
 
         dqp.plot(stored_x[n])
-        for l_dq in stored_l_dq[n]:
-            dqp.plot(l_dq, line=True, scale=2, color="g")
-        for pi_dq in stored_pi_dq[n]:
-            dqp.plot(pi_dq, plane=True, scale=2, color='b', alpha=0.2)
+
+        line_colors = ['r+-', 'k.-', 'g+-', 'c-.']
+        plane_colors = ['r', 'k', 'g', 'c']
+
+        for line_counter in range(len(stored_l_dq[n])):
+            l_dq = stored_l_dq[n][line_counter]
+            dqp.plot(l_dq, line=True, scale=1, color=line_colors[line_counter % len(line_colors)])
+        for plane_counter in range(len(stored_pi_dq[n])):
+            pi_dq = stored_pi_dq[n][plane_counter]
+            dqp.plot(pi_dq, plane=True, scale=1, color=plane_colors[plane_counter % len(plane_colors)], alpha=0.2)
 
     # Set up the plot
     fig = plt.figure(dpi=200, figsize=(12, 10))
@@ -238,8 +243,6 @@ def output_moving_primitives():
                       frames=len(stored_x))
 
     anim.save("output_moving_primitives.mp4")
-
-
 
 def main():
 
