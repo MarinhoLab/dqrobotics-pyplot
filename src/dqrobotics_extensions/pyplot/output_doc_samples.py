@@ -30,6 +30,7 @@ from functools import partial # Need to call functions correctly for matplotlib 
 
 from math import sin, cos, pi
 import numpy as np
+from pyparsing import alphas
 
 """Any changes in line spacing in this file must be reflected in the documentation. See: https://marinholab.github.io/dqrobotics-pyplot/gallery.html
 It is recommended that any new functions are added just before main()."""
@@ -187,14 +188,14 @@ def output_moving_primitives():
 
     x = DQ([1])
     ls_dq_init = [i_, j_, k_]
-    pis_dq_init = [k_]
+    pis_dq_init = [k_, normalize(i_ + j_), normalize(i_ + j_ + k_)]
 
     # Translation controller loop.
     for time in np.arange(0, time_final + tau, tau):
 
         # Modify line
         ls_dq = [Ad(x, l_dq_init) for l_dq_init in ls_dq_init]
-        pis_dq = [Adsharp(conj(x), pi_dq_init) for pi_dq_init in pis_dq_init]
+        pis_dq = [Adsharp(x, pi_dq_init) for pi_dq_init in pis_dq_init]
 
         # Store data for posterior animation
         stored_x.append(x)
@@ -222,7 +223,7 @@ def output_moving_primitives():
         for l_dq in stored_l_dq[n]:
             dqp.plot(l_dq, line=True, scale=2, color="g")
         for pi_dq in stored_pi_dq[n]:
-            dqp.plot(pi_dq, plane=True, scale=2, color='b')
+            dqp.plot(pi_dq, plane=True, scale=2, color='b', alpha=0.2)
 
     # Set up the plot
     fig = plt.figure(dpi=200, figsize=(12, 10))

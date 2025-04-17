@@ -139,16 +139,21 @@ def _plot_plane(pi_dq,
     n = P(pi_dq)
     d = D(pi_dq)
 
-    # Find a rotation that aligns the normal of the plane with the z-axis.
+    # Find a rotation that aligns the origin's z-axis with the normal to the plane.
     if not np.allclose(n.q, k_.q, atol=DQ_threshold):
-        phi: float = acos(dot(n, k_).q[0])
-        v: DQ = cross(n, k_) * (1.0 / sin(phi))
+        phi: float = acos(dot(k_, n).q[0])
+        v: DQ = cross(k_, n) * (1.0 / sin(phi))
         r: DQ = cos(phi / 2.0) + v * sin(phi / 2.0)
     else:
         r: DQ = DQ([1])
 
     # The translation about z is after the normal is applied.
     x_dq: DQ = r * (1 + 0.5*E_ * d * k_)
+
+    # Sanity check: is the point in the plane?
+    p = translation(x_dq)
+    if not np.isclose(dot(p, n).q[0], d.q[0], atol=DQ_threshold):
+        raise RuntimeError(f"The point {p} is not in the plane. <p, n> = {dot(p, n).q[0]} != {d.q[0]}.")
 
     # Cylindrical points start at zero
     x = np.linspace(-length_x / 2.0, length_x / 2.0, 2)
