@@ -185,8 +185,8 @@ def _plot_serial_manipulator(robot: DQ_SerialManipulator,
                              line_width = 3,
                              cylinder_color: str = "b",
                              cylinder_alpha: float = 0.8,
-                             cylinder_radius: float = 0.07,
-                             cylinder_height: float = 0.02,
+                             cylinder_radius: float = 0.02,
+                             cylinder_height: float = 0.07,
                              ax=None):
     """
     Draw a serial manipulator at a given joint configuration q. Each joint transformation will be connected by a line

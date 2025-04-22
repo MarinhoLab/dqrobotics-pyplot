@@ -23,7 +23,6 @@ from dqrobotics import *
 import dqrobotics_extensions.pyplot as dqp
 from dqrobotics.robots import KukaLw4Robot
 from dqrobotics.utils.DQ_Math import deg2rad
-from pyparsing import line_end
 
 from ._utils import _set_plot_labels, _set_plot_limits
 
@@ -62,8 +61,8 @@ def output_moving_manipulators():
                  line_width=5,
                  cylinder_color="k",
                  cylinder_alpha=0.9,
-                 cylinder_radius=0.07,
-                 cylinder_height=0.01)
+                 cylinder_radius=0.035,
+                 cylinder_height=0.1)
         dqp.plot(R2, q=stored_qs[n][1],
                  line_color='b',
                  cylinder_color="c",
