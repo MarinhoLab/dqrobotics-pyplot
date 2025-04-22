@@ -25,47 +25,42 @@ from ._utils import _set_plot_labels, _set_plot_limits
 
 from matplotlib import pyplot as plt
 
-
-def output_planes():
+def output_spheres():
     """
-    Calculate and visualize multiple planes represented as DQs.
+    Calculate and visualize multiple spheres represented as DQs.
     """
 
-    # pi1
-    n1_pi = i_
-    d1_pi = 0.1
-    pi1_dq = n1_pi + E_ * d1_pi
+    # p1
+    p1 = DQ([0])
+    r1 = 0.1
 
-    # pi2
-    n2_pi = j_
-    d2_pi = -0.1
-    pi2_dq = n2_pi + E_ * d2_pi
+    # l2
+    p2 = 0.1*i_
+    r2 = 0.2
 
-    # pi3
-    n3_pi = k_
-    d3_pi = 0.2
-    pi3_dq = n3_pi + E_ * d3_pi
+    # l3
+    p3 = 0.2*j_
+    r3 = 0.05
 
-    # pi4
-    n4_pi = normalize(i_ + j_ + k_)
-    d4_pi = 0
-    pi4_dq = n4_pi + E_ * d4_pi
+    # l4
+    p4 = 0.1*i_ + 0.2*j_ + 0.1*k_
+    r4 = 0.1
 
     # Plot using subplot
     fig = plt.figure(figsize=(12, 10))
 
-    plane_list = [pi1_dq, pi2_dq, pi3_dq, pi4_dq]
+    sphere_list = [(p1, r1), (p2, r2), (p3, r3), (p4, r4)]
     color_list = ['r', 'k', 'g', 'c']
 
-    for i in range(0, len(plane_list)):
-        pi_dq = plane_list[i]
+    for i in range(0, len(sphere_list)):
+        p, r = sphere_list[i]
         color = color_list[i]
 
-        ax = plt.subplot(2, 2, i+1, projection='3d')
-        dqp.plot(pi_dq, plane=True, scale=0.5, color=color)
-        ax.title.set_text(rf'$\boldsymbol{{\pi}}_{i}$')
+        ax = plt.subplot(2, 2, i + 1, projection='3d')
+        dqp.plot(p, sphere=True, radius=r, color=color)
+        ax.title.set_text(rf'$\boldsymbol{{p}}_{i}$')
         _set_plot_labels()
         _set_plot_limits()
 
     fig.tight_layout()
-    plt.savefig("output_planes.png")
+    plt.savefig("output_spheres.png")

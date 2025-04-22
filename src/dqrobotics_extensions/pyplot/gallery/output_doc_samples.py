@@ -20,6 +20,7 @@ Author: Murilo M. Marinho
 from _output_poses import output_poses
 from _output_lines import output_lines
 from _output_planes import output_planes
+from _output_spheres import output_spheres
 from _output_moving_primitives import output_moving_primitives
 
 def main():
@@ -27,6 +28,7 @@ def main():
     output_poses()
     output_lines()
     output_planes()
+    output_spheres()
     output_moving_primitives()
 
 if __name__ == "__main__":

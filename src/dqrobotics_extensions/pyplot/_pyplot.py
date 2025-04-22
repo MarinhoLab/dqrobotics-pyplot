@@ -75,6 +75,8 @@ def _plot_dq(dq : DQ,
              scale: float = 0.1,
              line = None,
              plane = None,
+             sphere = None,
+             radius = None,
              color = 'r',
              alpha = 0.8,
              ax = None
@@ -89,6 +91,7 @@ def _plot_dq(dq : DQ,
     :param scale: If not None, defines the size of the frame.
     :param line: If not None, draw the input DQ as a line.
     :param plane: If not None, draw the input DQ as a plane.
+    :param sphere: If not None, draw the input DQ as a sphere.
     :param color: Define the color of the frame, line, or plane.
     :param alpha: Define the alpha of the plane.
     :param ax: Figure Axes or plt.gca() if None.
@@ -105,6 +108,12 @@ def _plot_dq(dq : DQ,
                     color=color,
                     alpha=alpha,
                     ax=ax)
+    elif sphere is not None:
+        _plot_sphere(p=dq,
+                     radius=radius,
+                     color=color,
+                     alpha=alpha,
+                     ax=ax)
     else:
         _plot_pose(x=dq,
                    length=scale,
@@ -302,6 +311,33 @@ def _plot_line(l_dq: DQ, linespec: str = "r", length: float = 10.0, ax=None):
     ax.plot3D((pl_negative.q[1], pl_positive.q[1]),
               (pl_negative.q[2], pl_positive.q[2]),
               (pl_negative.q[3], pl_positive.q[3]), linespec)
+
+def _plot_sphere(p: DQ, radius: float, color = 'b', alpha: float = 0.8, ax=None):
+    """
+    Draw a sphere of a given `radius` centered at `p`, where `p` is a pure quaternion.
+
+    See: https://stackoverflow.com/questions/64656951/plotting-spheres-of-radius-r.
+
+    :param p: the DQ representing the centre of the sphere.
+    :param radius: the radius of the sphere.
+    :param color: the color of the sphere.
+    :param alpha: the transparency of the sphere.
+    :param ax: Figure Axes or plt.gca() if None.
+    :raises: RuntimeError: If `p` is not a pure quaternion.
+    """
+    if (not is_quaternion(p)) or (not is_pure(p)):
+        raise RuntimeError(f"The input p = {p} is not a pure quaternion.")
+    if ax is None:
+        ax = plt.gca()
+
+    # draw sphere
+    u, v = np.mgrid[0:2 * np.pi:50j, 0:np.pi:50j]
+    x = radius * np.cos(u) * np.sin(v)
+    y = radius * np.sin(u) * np.sin(v)
+    z = radius * np.cos(v)
+
+    ax.plot_surface(x - p.q[1], y - p.q[2], z - p.q[3], color=color, alpha=alpha)
+
 
 def __plot_revolute_joint(x,
                           height_z=0.07,
