@@ -17,11 +17,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 Author: Murilo M. Marinho
 """
-from _output_poses import output_poses
-from _output_lines import output_lines
-from _output_planes import output_planes
-from _output_spheres import output_spheres
-from _output_moving_primitives import output_moving_primitives
+from dqrobotics_extensions.pyplot.gallery._output_poses import output_poses
+from dqrobotics_extensions.pyplot.gallery._output_lines import output_lines
+from dqrobotics_extensions.pyplot.gallery._output_planes import output_planes
+from dqrobotics_extensions.pyplot.gallery._output_spheres import output_spheres
+from dqrobotics_extensions.pyplot.gallery._output_moving_primitives import output_moving_primitives
 
 def main():
 

@@ -6,7 +6,10 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src/"]
-include = ["dqrobotics_extensions.pyplot"]
+include = [
+    "dqrobotics_extensions.pyplot",
+    "dqrobotics_extensions.pyplot.gallery"
+]
 
 [project]
 name = "dqrobotics-pyplot"
@@ -36,7 +39,7 @@ Homepage = "https://github.com/MarinhoLab/dqrobotics-pyplot"
 [project.scripts]
 dqrobotics_pyplot_example = "dqrobotics_extensions.pyplot.example:main"
 dqrobotics_pyplot_example_animation = "dqrobotics_extensions.pyplot.example_animation:main"
-dqrobotics_pyplot_output_doc_samples = "dqrobotics_extensions.pyplot.output_doc_samples:main"
+dqrobotics_pyplot_output_doc_samples = "dqrobotics_extensions.pyplot.gallery.output_doc_samples:main"
 
 # https://pypi.org/project/setuptools-git-versioning/
 [tool.setuptools-git-versioning]
