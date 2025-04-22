@@ -100,5 +100,3 @@ def output_moving_primitives():
                       frames=len(stored_x))
 
     anim.save("output_moving_primitives.mp4")
-
-

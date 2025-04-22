@@ -69,4 +69,3 @@ def output_planes():
 
     fig.tight_layout()
     plt.savefig("output_planes.png")
-

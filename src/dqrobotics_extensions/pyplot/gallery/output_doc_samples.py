@@ -17,7 +17,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 Author: Murilo M. Marinho
 """
-from _ouput_poses import output_poses
+from _output_poses import output_poses
 from _output_lines import output_lines
 from _output_planes import output_planes
 from _output_moving_primitives import output_moving_primitives
@@ -31,4 +31,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

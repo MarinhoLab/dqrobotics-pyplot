@@ -66,4 +66,3 @@ def output_poses():
 
     fig.tight_layout()
     plt.savefig("output_poses.png")
-
