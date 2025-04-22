@@ -98,7 +98,7 @@ def _plot_dq(dq : DQ,
     """
     if line is not None:
         _plot_line(l_dq=dq,
-                   linespec=color,
+                   color=color,
                    length=scale,
                    ax=ax)
     elif plane is not None:
@@ -171,7 +171,7 @@ def _plot_plane(pi_dq,
     x_grid, y_grid = np.meshgrid(x, y)
     z_grid = np.zeros(x_grid.shape)
 
-    x_grid_ad, y_grid_ad, z_grid_ad = __dq_ajoint_grid(x_dq, x_grid, y_grid, z_grid)
+    x_grid_ad, y_grid_ad, z_grid_ad = __dq_adjoint_grid(x_dq, x_grid, y_grid, z_grid)
 
     ax.plot_surface(x_grid_ad,
                     y_grid_ad,
@@ -181,16 +181,22 @@ def _plot_plane(pi_dq,
 
 def _plot_serial_manipulator(robot: DQ_SerialManipulator,
                              q: np.ndarray,
-                             linespec: str = "k-",
-                             linewidth=3,
+                             line_color: str = "k",
+                             line_width = 3,
+                             cylinder_color: str = "b",
+                             cylinder_alpha: float = 0.8,
+                             cylinder_radius: float = 0.07,
+                             cylinder_height: float = 0.02,
                              ax=None):
     """
     Draw a serial manipulator at a given joint configuration q. Each joint transformation will be connected by a line
-    with spec linespec and width linewidth.
+    with spec line_color and width linewidth.
     :param robot: A concrete subclass of DQ_SerialManipulator.
     :param q: The joint configurations.
-    :param linespec: A matplotlib linespec. Has a default value.
-    :param linewidth: The width is compatible with matplotlib. Has a default value.
+    :param line_color: A suitable color for the line.
+    :param line_width: The width is compatible with matplotlib.
+    :param cylinder_color: A suitable color for the cylinder.
+    :param cylinder_alpha: The alpha of the cylinder.
     :param ax: Figure Axes or plt.gca() if None.
     """
     if ax is None:
@@ -200,42 +206,51 @@ def _plot_serial_manipulator(robot: DQ_SerialManipulator,
     y_plot = []
     z_plot = []
 
-    for dof in range(0, robot.get_dim_configuration_space()):
-        pose = robot.fkm(q, dof)
-        t = translation(pose)
+    # Store pose information and draw reference frames of each joint
+    for i in range(0, robot.get_dim_configuration_space()):
+        xi = robot.fkm(q, i)
+        t = translation(xi)
         x_plot.append(t.q[1])
         y_plot.append(t.q[2])
         z_plot.append(t.q[3])
 
-        __plot_revolute_joint(pose, ax=ax)
-        _plot_pose(pose, ax=ax)
+        __plot_revolute_joint(xi,
+                              color=cylinder_color,
+                              alpha=cylinder_alpha,
+                              height_z=cylinder_height,
+                              radius=cylinder_radius,
+                              ax=ax)
+        _plot_pose(xi, ax=ax)
 
-    # Draw a reference frame
+    # Draw the reference frame
     x_ref = robot.get_reference_frame()
     t_ref = translation(x_ref)
+    _plot_pose(x_ref, ax=ax)
+    # Draw line connecting reference frame to joint 0
     ax.plot3D((t_ref.q[1], x_plot[0]),
               (t_ref.q[2], y_plot[0]),
               (t_ref.q[3], z_plot[0]),
-              linespec,
-              linewidth=linewidth)
-    _plot_pose(x_ref, ax=ax)
+              line_color,
+              linewidth=line_width)
 
+    # Draw lines connecting the sequential reference frames
     for i in range(0, len(x_plot) - 1):
         ax.plot3D((x_plot[i], x_plot[i + 1]),
                   (y_plot[i], y_plot[i + 1]),
                   (z_plot[i], z_plot[i + 1]),
-                  linespec,
-                  linewidth=linewidth)
+                  color=line_color,
+                  linewidth=line_width)
 
     # Draw end effector frame
     x_eff = robot.fkm(q)
     t_eff = translation(x_eff)
+    _plot_pose(x_eff, ax=ax)
+    # Draw line connecting last joint to end effector frame
     ax.plot3D((t_eff.q[1], x_plot[-1]),
               (t_eff.q[2], y_plot[-1]),
               (t_eff.q[3], z_plot[-1]),
-              linespec,
-              linewidth=linewidth)
-    _plot_pose(x_eff, ax=ax)
+              line_color,
+              linewidth=line_width)
 
 
 def _plot_pose(x: DQ, length: float = 0.1, ax=None):
@@ -284,12 +299,12 @@ def _plot_pose(x: DQ, length: float = 0.1, ax=None):
               color="b",
               normalize=True)
 
-def _plot_line(l_dq: DQ, linespec: str = "r", length: float = 10.0, ax=None):
+def _plot_line(l_dq: DQ, color: str = "r", length: float = 10.0, ax=None):
     """
     Draw a line representing the DQ l_dq.
     :param l_dq: the DQ representation of the line.
-    :param linespec: the desired linespec. Has a default value.
-    :param length: the length. Has a default value.
+    :param color: the color.
+    :param length: the length.
     :param ax: Figure Axes or plt.gca() if None.
     :raises RuntimeError: If argument `x` is not a line.
     """
@@ -310,7 +325,8 @@ def _plot_line(l_dq: DQ, linespec: str = "r", length: float = 10.0, ax=None):
 
     ax.plot3D((pl_negative.q[1], pl_positive.q[1]),
               (pl_negative.q[2], pl_positive.q[2]),
-              (pl_negative.q[3], pl_positive.q[3]), linespec)
+              (pl_negative.q[3], pl_positive.q[3]),
+              color) # It's important not to use the named `color` so that we accept strings such as `r-`.
 
 def _plot_sphere(p: DQ, radius: float, color = 'b', alpha: float = 0.8, ax=None):
     """
@@ -330,7 +346,6 @@ def _plot_sphere(p: DQ, radius: float, color = 'b', alpha: float = 0.8, ax=None)
     if ax is None:
         ax = plt.gca()
 
-    # draw sphere
     u, v = np.mgrid[0:2 * np.pi:50j, 0:np.pi:50j]
     x = radius * np.cos(u) * np.sin(v)
     y = radius * np.sin(u) * np.sin(v)
@@ -340,8 +355,10 @@ def _plot_sphere(p: DQ, radius: float, color = 'b', alpha: float = 0.8, ax=None)
 
 
 def __plot_revolute_joint(x,
-                          height_z=0.07,
-                          radius=0.02,
+                          height_z,
+                          radius,
+                          color,
+                          alpha,
                           ax=None):
     """
     This internal function is used to draw cylinders, for now, for DQ_SerialManipulators. The cylinder's height is through
@@ -349,18 +366,15 @@ def __plot_revolute_joint(x,
     :param x: the pose as a DQ.
     :param height_z: the height of the cylinder.
     :param radius: the radius of the cylinder.
+    :param color: the color of the cylinder.
+    :param alpha: the transparency of the cylinder.
     :param ax: Figure Axes or plt.gca() if None.
     """
-
-    param_dict = {
-        "alpha": 0.8,
-        "linewidth": 0,
-        "color": 'r'
-    }
     __plot_cylinder(x,
                     height_z=height_z,
                     radius=radius,
-                    param_dict=param_dict,
+                    color=color,
+                    alpha=alpha,
                     ax=ax)
 
 
@@ -384,14 +398,14 @@ def __dq_adjoint(x: DQ, t: DQ):
     return D(conj(Adsharp(x, t_dq)))
 
 
-def __dq_ajoint_grid(x: DQ, x_grid, y_grid, z_grid):
+def __dq_adjoint_grid(x: DQ, x_grid, y_grid, z_grid):
     """
     This internal function runs `__dq_adjoint` through all elements of a grid so that calculations are simplified.
     For instance, to move a cylinder or other surface around a plot.
     :param x: A unit dual quaternion.
-    :param x_grid: A suitable x-axis grid element (see __plot_cylinder)
-    :param y_grid: A suitable y-axis grid element (see __plot_cylinder)
-    :param z_grid: A suitable z-axis grid element (see __plot_cylinder)
+    :param x_grid: A suitable x-axis grid element.
+    :param y_grid: A suitable y-axis grid element.
+    :param z_grid: A suitable z-axis grid element.
     :return: The transformed grids by `x`.
     :raises RuntimeError: If argument grids have different shapes.
     """
@@ -411,7 +425,7 @@ def __dq_ajoint_grid(x: DQ, x_grid, y_grid, z_grid):
             y_element = y_grid[i, j]
             z_element = z_grid[i, j]
 
-            p = DQ([x_element, y_element, z_element])
+            p = x_element*i_ + y_element*j_ + z_element*k_
             p_prime = __dq_adjoint(x, p)
 
             x_grid_ad[i, j] = p_prime.q[1]
@@ -424,7 +438,8 @@ def __dq_ajoint_grid(x: DQ, x_grid, y_grid, z_grid):
 def __plot_cylinder(x,
                     height_z: float,
                     radius: float,
-                    param_dict: dict,
+                    color: str,
+                    alpha: float,
                     ax=None):
     """
     Internal method to draw a cylinder. x is a unit dual quaternion that defines the centre of the cylinder. The cylinder
@@ -432,7 +447,8 @@ def __plot_cylinder(x,
     :param x: a unit dual quaternion representing the pose of the centre of the cylinder.
     :param height_z: the height of the cylinder.
     :param radius: the radius of the cylinder.
-    :param param_dict: the parameter dictionary to be passed on to plot_surface.
+    :param color: the color of the cylinder.
+    :param alpha: the transparency of the cylinder.
     :param ax: Figure Axes or plt.gca() if None.
     :raises RuntimeError: If argument `x` is not a unit dual quaternion.
     """
@@ -450,9 +466,10 @@ def __plot_cylinder(x,
     x_grid = radius * np.cos(theta_grid)
     y_grid = radius * np.sin(theta_grid)
 
-    x_grid_ad, y_grid_ad, z_grid_ad = __dq_ajoint_grid(x, x_grid, y_grid, z_grid)
+    x_grid_ad, y_grid_ad, z_grid_ad = __dq_adjoint_grid(x, x_grid, y_grid, z_grid)
 
     ax.plot_surface(x_grid_ad,
                     y_grid_ad,
                     z_grid_ad,
-                    **param_dict)
+                    color=color,
+                    alpha=alpha)

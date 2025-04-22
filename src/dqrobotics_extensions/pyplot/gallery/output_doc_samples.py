@@ -22,6 +22,7 @@ from dqrobotics_extensions.pyplot.gallery._output_lines import output_lines
 from dqrobotics_extensions.pyplot.gallery._output_planes import output_planes
 from dqrobotics_extensions.pyplot.gallery._output_spheres import output_spheres
 from dqrobotics_extensions.pyplot.gallery._output_moving_primitives import output_moving_primitives
+from dqrobotics_extensions.pyplot.gallery._output_moving_manipulators import output_moving_manipulators
 
 def main():
 
@@ -30,6 +31,7 @@ def main():
     output_planes()
     output_spheres()
     output_moving_primitives()
+    output_moving_manipulators()
 
 if __name__ == "__main__":
     main()

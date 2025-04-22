@@ -24,7 +24,7 @@ def _set_plot_labels():
     plt.ylabel('y [m]')
     plt.gca().set_zlabel('z [m]')
 
-def _set_plot_limits():
-    plt.xlim([-0.5, 0.5])
-    plt.ylim([-0.5, 0.5])
-    plt.gca().set_zlim([-0.5, 0.5])
+def _set_plot_limits(lmin: float = -0.5, lmax: float = 0.5):
+    plt.xlim([lmin, lmax])
+    plt.ylim([lmin, lmax])
+    plt.gca().set_zlim([lmin, lmax])
