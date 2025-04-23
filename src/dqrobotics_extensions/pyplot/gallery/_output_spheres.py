@@ -57,10 +57,13 @@ def output_spheres():
         color = color_list[i]
 
         ax = plt.subplot(2, 2, i + 1, projection='3d')
+
         dqp.plot(p, sphere=True, radius=r, color=color)
+
         ax.title.set_text(rf'$\boldsymbol{{p}}_{i}$')
         _set_plot_labels()
-        _set_plot_limits()
+        # https://matplotlib.org/stable/gallery/subplots_axes_and_figures/axis_equal_demo.html
+        ax.axis('equal') # Adjusted to show that they are spheres not ellipsoids
 
     fig.tight_layout()
     plt.savefig("output_spheres.png")

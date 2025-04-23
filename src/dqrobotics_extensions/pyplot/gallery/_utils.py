@@ -20,11 +20,17 @@ Author: Murilo M. Marinho
 from matplotlib import pyplot as plt
 
 def _set_plot_labels():
-    plt.xlabel('x [m]')
-    plt.ylabel('y [m]')
-    plt.gca().set_zlabel('z [m]')
+    ax = plt.gca()
+    ax.set(
+        xlabel='x [m]',
+        ylabel='y [m]',
+        zlabel='z [m]'
+    )
 
 def _set_plot_limits(lmin: float = -0.5, lmax: float = 0.5):
-    plt.xlim([lmin, lmax])
-    plt.ylim([lmin, lmax])
-    plt.gca().set_zlim([lmin, lmax])
+    ax = plt.gca()
+    ax.set(
+        xlim=[lmin, lmax],
+        ylim=[lmin, lmax],
+        zlim=[lmin, lmax]
+    )
