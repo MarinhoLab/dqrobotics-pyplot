@@ -27,7 +27,7 @@ maintainers = [
   {name = "Murilo M. Marinho", email = "murilomarinho@ieee.org"}
 ]
 description = "An extension of dqrobotics to use matplotlib.pyplot to plot DQ elements."
-readme = "README.md"
+readme = "README.rst"
 classifiers = [
   "Development Status :: 4 - Beta",
   "Programming Language :: Python :: 3"
