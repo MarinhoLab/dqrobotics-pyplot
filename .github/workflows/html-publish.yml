@@ -37,7 +37,8 @@ jobs:
       # https://mystmd.org/guide/deployment-github-pages#fn-except-custom-domains
       - name: Install dependencies
         run: |
-          sudo apt install -y ffmpeg
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
           pip install .
 
       - name: Generate gallery assets
