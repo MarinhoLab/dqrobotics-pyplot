@@ -42,7 +42,7 @@ def output_planes():
     pi2_dq = n2_pi + E_ * d2_pi
 
     # pi3
-    n3_pi = k_
+    n3_pi = -k_
     d3_pi = 0.2
     pi3_dq = n3_pi + E_ * d3_pi
 

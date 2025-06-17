@@ -24,7 +24,7 @@ from matplotlib import pyplot as plt
 
 import numpy as np
 
-from math import acos, sin, cos
+from math import acos, sin, cos, pi
 
 def plot(obj, **kwargs):
     """
@@ -149,12 +149,17 @@ def _plot_plane(pi_dq,
     d = D(pi_dq)
 
     # Find a rotation that aligns the origin's z-axis with the normal to the plane.
-    if not np.allclose(n.q, k_.q, atol=DQ_threshold):
+    # Update 2025.06 addressing -k_. For -k_, v and r became zero.
+    if np.allclose(n.q, k_.q, atol = DQ_threshold):
+        r: DQ = DQ([1]) # k, no rotation is needed
+    elif np.allclose(n.q, -k_.q, atol = DQ_threshold):
+        # We can add any rotation that brings k to -k. There are infinite possibilities, and we choose one of the simplest.
+        r: DQ = cos(pi / 2.0) + i_ * sin(pi / 2.0) # -k, rotate 180 degrees about x
+    else:
         phi: float = acos(dot(k_, n).q[0])
         v: DQ = cross(k_, n) * (1.0 / sin(phi))
         r: DQ = cos(phi / 2.0) + v * sin(phi / 2.0)
-    else:
-        r: DQ = DQ([1])
+
 
     # The translation about z is after the normal is applied.
     x_dq: DQ = r * (1 + 0.5*E_ * d * k_)
@@ -245,7 +250,7 @@ def _plot_serial_manipulator(robot: DQ_SerialManipulator,
     x_eff = robot.fkm(q)
     t_eff = translation(x_eff)
     _plot_pose(x_eff, ax=ax)
-    # Draw line connecting last joint to end effector frame
+    # Draw line connecting last joint to end-effector frame
     ax.plot3D((t_eff.q[1], x_plot[-1]),
               (t_eff.q[2], y_plot[-1]),
               (t_eff.q[3], z_plot[-1]),
