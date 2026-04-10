@@ -44,7 +44,7 @@ html_theme_options = {
     "source_repository": "https://github.com/marinholab/dqrobotics-pyplot",
     "source_branch": "main",
     "source_directory": "docs/",
-    "announcement": "<em>Just released 🎉, feedback welcomed at "
+    "announcement": "<em>Suggestions and comments welcomed at "
     "<a href='https://github.com/MarinhoLab/dqrobotics-pyplot/issues'>dqrobotics-pyplot Issues</a></em>",
 }
 
